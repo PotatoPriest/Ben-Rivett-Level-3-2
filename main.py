@@ -1,3 +1,9 @@
+# Name - Benjamin Rivett
+# Date - 20/2/2024
+# Version - 0.1
+# This is the most basic version of this programme.
+
+# Importing required things
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import simpledialog
@@ -14,7 +20,7 @@ def Error(): # This definition is used to error catch
     messagebox.showerror(title="Error", message="There has been an error")
 
 class window: # This class is used to create the window of the programme
-    def __init__(self):
+    def __init__(self): # definition for when the class is initilized
         self.window = tk.Tk()
         self.window.title("Game by: Benjamin Rivett")
         self.window.geometry("400x300")
