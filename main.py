@@ -1,10 +1,11 @@
 # Name - Benjamin Rivett
 # Date - 20/2/2024
-# Version - 0.1
-# This is the most basic version of this programme.
+# Version - 0.2
+# This version includes a woring settings menu that can change the background colour, the colour or the buttons, and the colour of the text.
 # State guide : 0 = Main Menu, 1 = Settings
 
 # Importing required things
+from collections.abc import Sized
 import tkinter as tk
 from tkinter import messagebox, simpledialog
 base_colour = "#d9d9d9"
@@ -33,7 +34,7 @@ class window: # This class is used to create the window of the programme
     def main_menu(self): # This definition is used to create the main menu
         self.state = 0
         self.menu_frame = tk.Frame(self.window, background=self.bg_colour)
-        self.menu_frame.pack()
+        self.menu_frame.pack(fill="both", expand=True)
         label(self.menu_frame, self.bg_colour, self.txt_colour, "Test words")
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Play", Error)
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Settings", self.settings_menu)
@@ -52,7 +53,7 @@ class window: # This class is used to create the window of the programme
         self.state = 1
         self.menu_frame.destroy()
         self.settings_frame = tk.Frame(self.window, background=self.bg_colour)
-        self.settings_frame.pack()
+        self.settings_frame.pack(fill="both", expand=True)
         label(self.settings_frame, self.bg_colour, self.txt_colour, "Settings")
         label(self.settings_frame, self.bg_colour, self.txt_colour, "Accessibility Options:")
         button(self.settings_frame, self.bt_colour, self.txt_colour, "Background Colour", lambda: self.colour_picker("background"))
@@ -63,25 +64,32 @@ class window: # This class is used to create the window of the programme
     def colour_picker(self, state): # this is a popup window that allows the user to pick a background colour
         self.colour_window = tk.Tk()
         self.colour_state = state
-        
+        self.colour_frame = tk.Frame(self.colour_window, background = self.bg_colour)
+        self.colour_frame.pack(fill="both", expand= True)
         if self.colour_state == "background":
             self.colour_window.title("Background Colour")
-            label(self.colour_window, self.bg_colour, self.txt_colour, "Pick the background colour")
+            label(self.colour_frame, self.bg_colour, self.txt_colour, "Pick the background colour")
             
         elif self.colour_state == "text":
             self.colour_window.title("Text Colour")
-            label(self.colour_window, self.bg_colour, self.txt_colour, "Pick the text colour")
+            label(self.colour_frame, self.bg_colour, self.txt_colour, "Pick the text colour")
 
         elif self.colour_state == "button":
             self.colour_window.title("Button Colour")
-            label(self.colour_window, self.bg_colour, self.txt_colour, "Pick the button colour")
+            label(self.colour_frame, self.bg_colour, self.txt_colour, "Pick the button colour")
+            
         
-        button(self.colour_window, self.bt_colour, self.txt_colour, "Light Gray", lambda: self.colour_setter(base_colour))
-        button(self.colour_window, self.bt_colour, self.txt_colour, "Black", lambda: self.colour_setter("#000000"))
-        button(self.colour_window, self.bt_colour, self.txt_colour, "White", lambda: self.colour_setter("#ffffff"))
-        button(self.colour_window, self.bt_colour, self.txt_colour, "Red", lambda: self.colour_setter("#ff0000"))
-        button(self.colour_window, self.bt_colour, self.txt_colour, "Green", lambda: self.colour_setter("#00ff00"))
-        button(self.colour_window, self.bt_colour, self.txt_colour, "Blue", lambda: self.colour_setter("#0000ff"))
+        self.colour_frame_left = tk.Frame(self.colour_frame, background = self.bg_colour)
+        self.colour_frame_left.pack(side=tk.LEFT)
+        self.colour_frame_right = tk.Frame(self.colour_frame, background = self.bg_colour)
+        self.colour_frame_right.pack(side=tk.RIGHT)
+        
+        button(self.colour_frame_left, self.bt_colour, self.txt_colour, "Light Gray", lambda: self.colour_setter(base_colour))
+        button(self.colour_frame_left, self.bt_colour, self.txt_colour, "Black", lambda: self.colour_setter("#000000"))
+        button(self.colour_frame_left, self.bt_colour, self.txt_colour, "White", lambda: self.colour_setter("#ffffff"))
+        button(self.colour_frame_right, self.bt_colour, self.txt_colour, "Red", lambda: self.colour_setter("#ff0000"))
+        button(self.colour_frame_right, self.bt_colour, self.txt_colour, "Green", lambda: self.colour_setter("#00ff00"))
+        button(self.colour_frame_right, self.bt_colour, self.txt_colour, "Blue", lambda: self.colour_setter("#0000ff"))
 
     def colour_setter(self, colour): # this updates the background colour
         if self.colour_state == "background":
