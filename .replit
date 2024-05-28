@@ -1,4 +1,4 @@
-entrypoint = "main.py"
+entrypoint = "Game/main.py"
 modules = ["python-3.11:v23-20240125-d91747b"]
 
 hidden = [".pythonlibs"]
