@@ -6,7 +6,7 @@
 
 # Importing required things
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, simpledialog
 
 def label(master, background, foreground, text): # This definition is used to create a label
     label = tk.Label(master=master, background=background, foreground=foreground, text=text)
@@ -27,32 +27,38 @@ class window: # This class is used to create the window of the programme
         self.txt_colour = "#000000"
         self.window.title("Game by: Benjamin Rivett")
         self.window.geometry("400x300")
+        self.score = 0
+        self.score_label = tk.Label(self.window, text="Score: " + str(self.score))
+        self.score_label.pack(anchor="nw")
         self.main_menu()
         
+    def update_score(self): # This definition is used to update the score
+        self.score_label.config(text="Score: " + str(self.score))
+    
     def main_menu(self): # This definition is used to create the main menu
         self.state = 0
         self.menu_frame = tk.Frame(self.window, background=self.bg_colour)
         self.menu_frame.pack(fill="both", expand=True)
-        label(self.menu_frame, self.bg_colour, self.txt_colour, "Test words")
+        label(self.menu_frame, self.bg_colour, self.txt_colour, "Main Menu")
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Play", self.play)
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Save", self.save_menu)
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Settings", self.settings_menu)
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Exit", self.back)
 
     def back(self): # definition that allows the user to go back a menu
-        if self.state == 0:
+        if self.state == 0: # Main Menu state
             if messagebox.askyesno("Exit", "Are you sure you want to exit?"):
                 self.window.destroy()
 
-        elif self.state == 1:
+        elif self.state == 1: # Game state
             self.game_frame.destroy()
             self.main_menu()
         
-        elif self.state == 2:
+        elif self.state == 2: # Save menu state
             self.save_menu_frame.destroy()
             self.main_menu()
             
-        elif self.state == 3:
+        elif self.state == 3: # Settings state
             self.settings_frame.destroy()
             self.main_menu()
 
@@ -67,11 +73,11 @@ class window: # This class is used to create the window of the programme
         button(self.save_menu_frame, self.bt_colour, self.txt_colour, "Clear Save", self.reset_file)
         button(self.save_menu_frame, self.bt_colour, self.txt_colour, "Back", self.back)
 
-    def save_file_def(self):
+    def save_file_def(self): # This definition allows for the game to be saved
         with open("Game/save.txt", "w") as self.save_file:
             self.save_file.writelines("It worked")
 
-    def load_file_def(self):
+    def load_file_def(self): # This definition allows for a save to be loaded
         with open("Game/save.txt", "r") as self.save_file:
             self.save_file_content = self.save_file.readlines()
             print(self.save_file_content)
@@ -92,7 +98,7 @@ class window: # This class is used to create the window of the programme
         button(self.settings_frame, self.bt_colour, self.txt_colour, "Button Colour", lambda: self.colour_picker("button"))
         button(self.settings_frame, self.bt_colour, self.txt_colour, "Back", self.back)
 
-    def colour_picker(self, state): # this is a popup window that allows the user to pick a background colour
+    def colour_picker(self, state): # this is a popup window that allows the user to change the colour of a part of the window
         self.colour_window = tk.Tk()
         self.colour_state = state
         self.colour_frame = tk.Frame(self.colour_window, background = self.bg_colour)
@@ -110,7 +116,6 @@ class window: # This class is used to create the window of the programme
             self.colour_window.title("Button Colour")
             label(self.colour_frame, self.bg_colour, self.txt_colour, "Pick the button colour")
             
-        
         self.colour_frame_left = tk.Frame(self.colour_frame, background = self.bg_colour)
         self.colour_frame_left.pack(side=tk.LEFT)
         self.colour_frame_right = tk.Frame(self.colour_frame, background = self.bg_colour)
@@ -124,9 +129,20 @@ class window: # This class is used to create the window of the programme
         button(self.colour_frame_right, self.bt_colour, self.txt_colour, "Blue", lambda: self.colour_setter("#0000ff"))
         button(self.colour_frame, self.bt_colour, self.txt_colour, "custom", self.custom_colour)
 
-    def custom_colour(self):
-        Error()
-    
+    def custom_colour(self): # custom colour picker? maybe?
+        self.custom = simpledialog.askstring("Custom Colour", "Enter a hex code for the colour")
+        try: # I should have a dummy label that I can try to change the colour of and if it doesn't wor then it will error catch and if it workes then it will change the colour. (You should not be able to see the dummy label in the programme)
+            pass
+        except:
+            pass
+        if self.custom is not None and "#" in self.custom and len(self.custom) == 7:
+            try: # should proboly change the way this works
+                self.colour_setter(self.custom)
+            except UnicodeError:
+                messagebox.showerror("Error", "Invalid hex code: " + self.custom)
+        else:
+            messagebox.showerror("Error", "Invalid hex code")
+          
     def colour_setter(self, colour): # this updates the background colour
         if self.colour_state == "background":
             self.bg_colour = colour
@@ -139,7 +155,7 @@ class window: # This class is used to create the window of the programme
         self.settings_menu()
         self.colour_window.destroy()
 
-    def play(self):
+    def play(self): # this is the game
         self.state = 1
         self.menu_frame.destroy()
         self.game_frame = tk.Frame(self.window, background=self.bg_colour)
