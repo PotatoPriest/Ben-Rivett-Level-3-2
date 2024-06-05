@@ -1,7 +1,7 @@
 # Name - Benjamin Rivett
-# Date - 20/2/2024
-# Version - 0.2
-# This version includes a woring settings menu that can change the background colour, the colour or the buttons, and the colour of the text.
+# Date - 6/6/2024
+# Version - 0.3
+# This version includes the ability to set custom colours for the background, text colour, and the background of buttons
 # State guide : 0 = Main Menu, 1 = Game, 2 = Settings, 3 = Save
 
 # Importing required things
@@ -28,9 +28,13 @@ class window: # This class is used to create the window of the programme
         self.window.title("Game by: Benjamin Rivett")
         self.window.geometry("400x300")
         self.score = 0
-        self.score_label = tk.Label(self.window, text="Score: " + str(self.score))
-        self.score_label.pack(anchor="nw")
+        self.score_frame = tk.Frame(self.window)
+        self.score_frame.pack(fill="both")
+        self.score_label = tk.Label(self.score_frame, text="Score: " + str(self.score))
+        self.score_label.pack(anchor="nw", side = "left")
         self.main_menu()
+        self.dummy_colour_check = tk.Label(self.score_frame, text="")
+        self.dummy_colour_check.pack(anchor="ne", side = "right")
         
     def update_score(self): # This definition is used to update the score
         self.score_label.config(text="Score: " + str(self.score))
@@ -129,25 +133,32 @@ class window: # This class is used to create the window of the programme
         button(self.colour_frame_right, self.bt_colour, self.txt_colour, "Blue", lambda: self.colour_setter("#0000ff"))
         button(self.colour_frame, self.bt_colour, self.txt_colour, "custom", self.custom_colour)
 
-    def custom_colour(self): # custom colour picker? maybe?
+    def custom_colour(self): # this definition allows the user to set a custom colour
         self.custom = simpledialog.askstring("Custom Colour", "Enter a hex code for the colour")
-        try: # I should have a dummy label that I can try to change the colour of and if it doesn't wor then it will error catch and if it workes then it will change the colour. (You should not be able to see the dummy label in the programme)
-            pass
-        except:
-            pass
-        if self.custom is not None and "#" in self.custom and len(self.custom) == 7:
+        
+        if self.custom is None:
+            messagebox.showerror("Error", "No hex code entered")
+            
+        elif "#" in self.custom and len(self.custom) == 7:
             try: # should proboly change the way this works
+                self.dummy_colour_check.config(foreground = self.custom)
                 self.colour_setter(self.custom)
-            except UnicodeError:
+                
+            except: # might cause problems
                 messagebox.showerror("Error", "Invalid hex code: " + self.custom)
+            
         else:
-            messagebox.showerror("Error", "Invalid hex code")
+            messagebox.showerror("Error", "Invalid hex code: " + self.custom)
           
     def colour_setter(self, colour): # this updates the background colour
         if self.colour_state == "background":
             self.bg_colour = colour
+            self.score_frame.config(background = colour)
+            self.score_label.config(background = colour)
+            self.dummy_colour_check.config(background = colour)
         elif self.colour_state == "text":
             self.txt_colour = colour
+            self.score_label.config(foreground = colour)
         elif self.colour_state == "button":
             self.bt_colour = colour
             
