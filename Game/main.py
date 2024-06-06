@@ -1,12 +1,12 @@
 # Name - Benjamin Rivett
 # Date - 6/6/2024
-# Version - 0.3
-# This version includes the ability to set custom colours for the background, text colour, and the background of buttons
+# Version - 0.4
+# This version finishes the custom colour function and addes the colours and score to the saved data
 # State guide : 0 = Main Menu, 1 = Game, 2 = Settings, 3 = Save
 
 # Importing required things
 import tkinter as tk
-from tkinter import messagebox, simpledialog
+from tkinter import Tcl, TclError, messagebox, simpledialog
 
 def label(master, background, foreground, text): # This definition is used to create a label
     label = tk.Label(master=master, background=background, foreground=foreground, text=text)
@@ -37,7 +37,9 @@ class window: # This class is used to create the window of the programme
         self.dummy_colour_check.pack(anchor="ne", side = "right")
         
     def update_score(self): # This definition is used to update the score
-        self.score_label.config(text="Score: " + str(self.score))
+        self.score_label.config(text="Score: " + str(self.score), foreground=self.txt_colour, background=self.bg_colour)
+        self.score_frame.config(background=self.bg_colour)
+        self.dummy_colour_check.config(background=self.bg_colour)
     
     def main_menu(self): # This definition is used to create the main menu
         self.state = 0
@@ -70,25 +72,36 @@ class window: # This class is used to create the window of the programme
         self.state = 2
         self.menu_frame.destroy()
         self.save_menu_frame = tk.Frame(self.window, background=self.bg_colour)
-        self.save_menu_frame.pack()
+        self.save_menu_frame.pack(fill = "both", expand = True)
         label(self.save_menu_frame, self.bg_colour, self.txt_colour, "Save Menu")
         button(self.save_menu_frame, self.bt_colour, self.txt_colour, "Save", self.save_file_def)
         button(self.save_menu_frame, self.bt_colour, self.txt_colour, "Load", self.load_file_def)
-        button(self.save_menu_frame, self.bt_colour, self.txt_colour, "Clear Save", self.reset_file)
+        button(self.save_menu_frame, self.bt_colour, self.txt_colour, "Clear Save", self.reset_file_def)
         button(self.save_menu_frame, self.bt_colour, self.txt_colour, "Back", self.back)
 
     def save_file_def(self): # This definition allows for the game to be saved
         with open("Game/save.txt", "w") as self.save_file:
-            self.save_file.writelines("It worked")
+            self.save_file.writelines("{}\n{}\n{}\n{}".format(self.score, self.bg_colour, self.txt_colour, self.bt_colour))
+        messagebox.showinfo("Game saved", "Your game has been successfully saved")
 
     def load_file_def(self): # This definition allows for a save to be loaded
         with open("Game/save.txt", "r") as self.save_file:
-            self.save_file_content = self.save_file.readlines()
-            print(self.save_file_content)
-
-    def reset_file(self): # Definition for reseting the save file
+            self.score = self.save_file.readline().strip()
+            self.bg_colour = self.save_file.readline().strip()
+            self.txt_colour = self.save_file.readline().strip()
+            self.bt_colour = self.save_file.readline().strip()
+        self.update_score()
+        self.save_menu_frame.destroy()
+        self.save_menu()
+        messagebox.showinfo("Save Loaded", "Your save has been successfully loaded")
+        
+    def reset_file_def(self): # Definition for reseting the save file
         with open("Game/save.txt", "w") as self.save_file:
-            self.save_file.writelines("")
+            self.save_file.writelines("0\n")
+            self.save_file.writelines("#d9d9d9\n")
+            self.save_file.writelines("#000000\n")
+            self.save_file.writelines("#d9d9d9")
+        messagebox.showinfo("Save Reset", "Your save has been successfully reset")
     
     def settings_menu(self): # this is the settings menu
         self.state = 3
@@ -140,11 +153,11 @@ class window: # This class is used to create the window of the programme
             messagebox.showerror("Error", "No hex code entered")
             
         elif "#" in self.custom and len(self.custom) == 7:
-            try: # should proboly change the way this works
+            try: 
                 self.dummy_colour_check.config(foreground = self.custom)
                 self.colour_setter(self.custom)
                 
-            except: # might cause problems
+            except TclError: 
                 messagebox.showerror("Error", "Invalid hex code: " + self.custom)
             
         else:
@@ -153,15 +166,11 @@ class window: # This class is used to create the window of the programme
     def colour_setter(self, colour): # this updates the background colour
         if self.colour_state == "background":
             self.bg_colour = colour
-            self.score_frame.config(background = colour)
-            self.score_label.config(background = colour)
-            self.dummy_colour_check.config(background = colour)
         elif self.colour_state == "text":
             self.txt_colour = colour
-            self.score_label.config(foreground = colour)
         elif self.colour_state == "button":
             self.bt_colour = colour
-            
+        self.update_score()
         self.settings_frame.destroy()
         self.settings_menu()
         self.colour_window.destroy()
