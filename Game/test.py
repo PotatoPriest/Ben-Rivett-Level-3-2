@@ -75,7 +75,7 @@ class window: # This class is used to create the window of the programme
         self.menu_frame = tk.Frame(self.window, background=self.bg_colour)
         self.menu_frame.pack(fill="both", expand=True)
         label(self.menu_frame, self.bg_colour, self.txt_colour, "Main Menu")
-        button(self.menu_frame, self.bt_colour, self.txt_colour, "Play", self.play)
+        button(self.menu_frame, self.bt_colour, self.txt_colour, "Play", self.loggin_screen)
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Save", self.save_menu)
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Settings", self.settings_menu)
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Exit", self.back)
@@ -100,6 +100,10 @@ class window: # This class is used to create the window of the programme
         elif self.state == 4:
             self.game_frame.destroy()
             self.main_menu()
+
+        elif self.state == 5:
+            self.game_learn_frame.destroy()
+            self.game_menu()
 
     def save_menu(self): # definition that allows the user to save the game
         self.state = 2
@@ -205,7 +209,7 @@ class window: # This class is used to create the window of the programme
         self.settings_menu()
         self.colour_window.destroy()
 
-    def play(self): # this is the game 
+    def loggin_screen(self): # this is the game 
         self.state = 1
         self.name = None
         self.menu_frame.destroy()
@@ -224,46 +228,143 @@ save your progress and be able to play again later.""")
             button(self.login_frame, self.bt_colour, self.txt_colour, "Skip", self.skip_login)
             button(self.login_frame, self.bt_colour, self.txt_colour, "Back", self.back)
         else:
-            self.play_game()
+            self.game_menu()
     
     def login_def(self):
         self.username = self.username_entry.get()
         self.password = self.password_entry.get()
         if self.username == "":
             messagebox.showerror("Error", "No username entered")
-        elif self.username in db: # IDK if this will cause problems
+        elif self.username in db:
             if self.password == "":
                 messagebox.showerror("Error", "No passwor entered")
             elif self.password == db[self.username]["Password"]:
                 self.logged_in = True
                 messagebox.showinfo(self.username, "Logged in successfully")
-                self.play_game()
+                self.score = db[self.username]["Score"]
+                self.update_score()
+                self.game_menu()
             else:
                 messagebox.showerror("Error", "Incorrect password")
         else:
             db[self.username] = {"Password":self.password_entry.get(), "Score":self.score}
             messagebox.showinfo(self.username, "Account created")
             self.logged_in = True
-            self.play_game()
+            self.game_menu()
 
     def skip_login(self):
         self.logged_in = True
         self.username = "Player"
-        self.play_game()
+        db["Player"] = {"Password":"", "Score":0}
+        self.game_menu()
 
     def loggout(self): # works for now but migth break later
         self.logged_in = False
         self.back()
     
-    def play_game(self):
+    def game_menu(self):
         if self.username == "Player":
             messagebox.showinfo("No username", "You have not logged in yet. You will be playing as 'Player'")
         self.state = 4
         self.login_frame.destroy()
         self.game_frame = tk.Frame(self.window, background=self.bg_colour)
         self.game_frame.pack(fill="both", expand=True)
+        button(self.game_frame, self.bt_colour, self.txt_colour, "Play", Error)
+        button(self.game_frame, self.bt_colour, self.txt_colour, "Learn", self.game_learn)
+        button(self.game_frame, self.bt_colour, self.txt_colour, "Show information", self.show_acount_info)
         button(self.game_frame, self.bt_colour, self.txt_colour, "Back", self.back)
+
+    def show_acount_info(self):
+        messagebox.showinfo(self.username, "Username: " + self.username + "\nPassword: " + db[self.username]["Password"] + "\nScore: " + str(db[self.username]["Score"]))
+
+
+    
+    def previous_page_def(self):
+        self.page_number -= 1
+        self.page_label.config(text="Page: {}".format(self.page_number))
+        self.page()
+
+    def next_page_def(self):
+        self.page_number += 1
+        self.page_label.config(text="Page: {}".format(self.page_number))
+        self.page()
+
+    def game_learn(self):
+        self.state = 5
+        self.game_frame.destroy()
+        self.page_number = 0
+        self.game_learn_frame = tk.Frame(self.window, background=self.bg_colour)
+        self.game_learn_frame.pack(fill="both", expand=True)
         
+        self.button_frame = tk.Frame(self.game_learn_frame, background=self.bg_colour)
+        self.button_frame.pack(anchor="s", fill="both", side="bottom")
+        self.previous_page = tk.Button(self.button_frame, text="Previous Page", command=self.previous_page_def)
+        self.previous_page.pack(side="left")
+        self.next_page = tk.Button(self.button_frame, text="Next Page", command=self.next_page_def)
+        self.next_page.pack(side="right")
+        self.back_button = tk.Button(self.button_frame, text="Back", command=self.back)
+        self.back_button.pack()
+        self.page_label = tk.Label(self.score_frame, text="Page {}".format(self.page_number))
+        self.page_label.pack(side = "right")
+        self.page()
+
+    def page(self):
+        if self.page_number <= 0:
+            self.previous_page.config(state="disabled")
+        elif self.page_number >= 5:
+            self.next_page.config(state="disabled")
+        else:
+            self.next_page.config(state="active")
+            self.previous_page.config(state="active")
+            
+        if self.page_number == 0:
+            self.content_frame_0 = tk.Frame(self.game_learn_frame, background=self.bg_colour)
+            self.content_frame_0.pack()
+            label(self.content_frame_0, self.bg_colour, self.txt_colour, """This section of the game is designed to teach you about
+Artificial Intelligence""")
+        elif self.page_number == 1:
+            try:
+                self.content_frame_2.destroy()
+            except:
+                self.content_frame_0.destroy()
+            self.content_frame_1 = tk.Frame(self.game_learn_frame, background=self.bg_colour)
+            self.content_frame_1.pack()
+            label(self.content_frame_1, self.bg_colour, self.txt_colour, """The first thing you need to know about AI is that it is
+not a human brain. It is a computer program that is programmed
+to think and act like a human.""")
+        elif self.page_number == 2:
+            try:
+                self.content_frame_3.destroy()
+            except:
+                self.content_frame_1.destroy()
+            self.content_frame_2 = tk.Frame(self.game_learn_frame, background=self.bg_colour)
+            self.content_frame_2.pack()
+            label(self.content_frame_2, self.bg_colour, self.txt_colour, """This is a test""")
+        elif self.page_number == 3:
+            try:
+                self.content_frame_4.destroy()
+            except:
+                self.content_frame_2.destroy()
+            self.content_frame_3 = tk.Frame(self.game_learn_frame, background=self.bg_colour)
+            self.content_frame_3.pack()
+            label(self.content_frame_3, self.bg_colour, self.txt_colour, """This is a random sentance""")
+        elif self.page_number == 4:
+            try:
+                self.content_frame_5.destroy()
+            except:
+                self.content_frame_3.destroy()
+            self.content_frame_4 = tk.Frame(self.game_learn_frame, background=self.bg_colour)
+            self.content_frame_4.pack()
+            label(self.content_frame_4, self.bg_colour, self.txt_colour, """This is another testing label""")
+        elif self.page_number == 5:
+            self.content_frame_4.destroy()
+            self.content_frame_5 = tk.Frame(self.game_learn_frame, background=self.bg_colour)
+            self.content_frame_5.pack()
+            label(self.content_frame_5, self.bg_colour, self.txt_colour, """This is the final page""")
+
+
+
+
 main = window() # This calls the window class
 main.window.mainloop() # This runs the window
 
