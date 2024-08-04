@@ -60,7 +60,7 @@ class window: # This class is used to create the window of the programme
         self.dummy_colour_check = tk.Label(self.score_frame, text="")
         self.dummy_colour_check.pack(anchor="ne", side = "right")
 
-    def score_add(self):
+    def score_add(self): # This definition increases the score by 1
         self.score = int(self.score)
         self.score += 1
         self.update_score()
@@ -309,60 +309,50 @@ save your progress and be able to play again later.""")
         self.page()
 
     def page(self):
+        # Disable previous and next buttons based on page_number
         if self.page_number <= 0:
             self.previous_page.config(state="disabled")
         elif self.page_number >= 5:
             self.next_page.config(state="disabled")
         else:
-            self.next_page.config(state="active")
             self.previous_page.config(state="active")
-            
-        if self.page_number == 0:
-            self.content_frame_0 = tk.Frame(self.game_learn_frame, background=self.bg_colour)
-            self.content_frame_0.pack()
-            label(self.content_frame_0, self.bg_colour, self.txt_colour, """This section of the game is designed to teach you about
+            self.next_page.config(state="active")
+
+        # Hide all content frames
+        for frame_num in range(6):
+            frame_attr = f"content_frame_{frame_num}"
+            if hasattr(self, frame_attr):
+                getattr(self, frame_attr).pack_forget()
+
+        # Create or show the appropriate content frame based on page_number
+        frame_attr = f"content_frame_{self.page_number}"
+        if hasattr(self, frame_attr):
+            getattr(self, frame_attr).pack()
+        else:
+            # Create new content frame
+            new_frame = tk.Frame(self.game_learn_frame, background=self.bg_colour)
+            new_frame.pack()
+            setattr(self, frame_attr, new_frame)  # Save reference to the new frame
+
+            # Populate new frame with content based on page_number
+            if self.page_number == 0:
+                label(new_frame, self.bg_colour, self.txt_colour, """This section of the game is designed to teach you about
 Artificial Intelligence""")
-        elif self.page_number == 1:
-            try:
-                self.content_frame_2.destroy()
-            except:
-                self.content_frame_0.destroy()
-            self.content_frame_1 = tk.Frame(self.game_learn_frame, background=self.bg_colour)
-            self.content_frame_1.pack()
-            label(self.content_frame_1, self.bg_colour, self.txt_colour, """The first thing you need to know about AI is that it is
+            elif self.page_number == 1:
+                label(new_frame, self.bg_colour, self.txt_colour, """The first thing you need to know about AI is that it is
 not a human brain. It is a computer program that is programmed
 to think and act like a human.""")
-        elif self.page_number == 2:
-            try:
-                self.content_frame_3.destroy()
-            except:
-                self.content_frame_1.destroy()
-            self.content_frame_2 = tk.Frame(self.game_learn_frame, background=self.bg_colour)
-            self.content_frame_2.pack()
-            label(self.content_frame_2, self.bg_colour, self.txt_colour, """This is a test""")
-        elif self.page_number == 3:
-            try:
-                self.content_frame_4.destroy()
-            except:
-                self.content_frame_2.destroy()
-            self.content_frame_3 = tk.Frame(self.game_learn_frame, background=self.bg_colour)
-            self.content_frame_3.pack()
-            label(self.content_frame_3, self.bg_colour, self.txt_colour, """This is a random sentance""")
-        elif self.page_number == 4:
-            try:
-                self.content_frame_5.destroy()
-            except:
-                self.content_frame_3.destroy()
-            self.content_frame_4 = tk.Frame(self.game_learn_frame, background=self.bg_colour)
-            self.content_frame_4.pack()
-            label(self.content_frame_4, self.bg_colour, self.txt_colour, """This is another testing label""")
-        elif self.page_number == 5:
-            self.content_frame_4.destroy()
-            self.content_frame_5 = tk.Frame(self.game_learn_frame, background=self.bg_colour)
-            self.content_frame_5.pack()
-            label(self.content_frame_5, self.bg_colour, self.txt_colour, """This is the final page""")
+            elif self.page_number == 2:
+                label(new_frame, self.bg_colour, self.txt_colour, """This is a test""")
+            elif self.page_number == 3:
+                label(new_frame, self.bg_colour, self.txt_colour, """This is a random sentence""")
+            elif self.page_number == 4:
+                label(new_frame, self.bg_colour, self.txt_colour, """This is another testing label""")
+            elif self.page_number == 5:
+                label(new_frame, self.bg_colour, self.txt_colour, """This is the final page""")
 
-
+        # Update page label
+        self.page_label.config(text="Page {}".format(self.page_number))
 
 
 main = window() # This calls the window class
