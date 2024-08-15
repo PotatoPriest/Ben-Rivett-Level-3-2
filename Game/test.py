@@ -206,7 +206,7 @@ class window: # This class is used to create the window of the programme
         self.colour_window.destroy()
 
     
-    def game_menu(self):
+    def game_menu(self): # This menu allows the player to pick which part of the game they want to play
         self.state = 1
         self.menu_frame.destroy()
         self.game_frame = tk.Frame(self.window, background=self.bg_colour)
@@ -255,12 +255,13 @@ class window: # This class is used to create the window of the programme
                 elif self.btn <= 15:
                     with suppress(AttributeError):
                         button(self.lnc3, self.bt_colour, self.txt_colour, "Level {}".format(x), inner_func)
+                        
         else:
             button(self.level_select_frame, self.bt_colour, self.txt_colour, "Level 0", lambda: self.game_start(0))
             
         button(self.level_select_frame, self.bt_colour, self.txt_colour, "Back", lambda: self.back(None))
 
-    def game_start(self, level_num):
+    def game_start(self, level_num): # This is what happens when the user pickes a level
         self.state = 6
         self.level_select_frame.destroy()
         self.level_select_button = tk.Button(self.score_frame, text="Level Select", command= lambda: self.back(level_num))
@@ -283,17 +284,17 @@ class window: # This class is used to create the window of the programme
         elif level_num == 6:
             print("this is the sixth level")
     
-    def previous_page_def(self):
+    def previous_page_def(self): # This allows the user to go to the previous page
         self.page_number -= 1
         self.page_label.config(text="Page: {}".format(self.page_number))
         self.page()
 
-    def next_page_def(self):
+    def next_page_def(self): # This allows the user to go to the next page
         self.page_number += 1
         self.page_label.config(text="Page: {}".format(self.page_number))
         self.page()
 
-    def game_learn(self):
+    def game_learn(self): # This allows the user to learn about A.I (Might change the way this works later)
         self.state = 5
         self.game_frame.destroy()
         self.page_number = 0
