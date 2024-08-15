@@ -6,6 +6,7 @@
 
 # Importing required things
 import tkinter as tk
+from contextlib import suppress
 from tkinter import TclError, messagebox, simpledialog
 
 option_menu = ["Select", "Learn", "Quiz"]
@@ -30,7 +31,7 @@ class window: # This class is used to create the window of the programme
         self.window.title("Game by: Benjamin Rivett")
         self.window.geometry("400x300")
         self.score = 0
-        self.level = 5
+        self.level = 0
         self.logged_in = False
         self.score_frame = tk.Frame(self.window)
         self.score_frame.pack(fill="both")
@@ -38,10 +39,15 @@ class window: # This class is used to create the window of the programme
         self.score_label.pack(anchor="nw", side = "left")
         self.score_button = tk.Button(self.score_frame, text="Score +1", command=self.score_add)
         self.score_button.pack(anchor="nw", side = "left")
+        self.level_button = tk.Button(self.score_frame, text="Level +1", command=self.level_add)
+        self.level_button.pack(anchor="ne", side = "right")
         self.main_menu()
         self.dummy_colour_check = tk.Label(self.score_frame, text="")
         self.dummy_colour_check.pack(anchor="ne", side = "right")
 
+    def level_add(self):
+        self.level = int(self.level)
+        self.level += 1
     def score_add(self): # This definition increases the score by 1
         self.score = int(self.score)
         self.score += 1
@@ -89,7 +95,7 @@ class window: # This class is used to create the window of the programme
 
         elif self.state == 6: # Game quiz state
             self.level_select_button.destroy()
-            frame_attr = f"level_{level_num}"
+            frame_attr = f"level_{level_num}" # I think this might be useless
             if hasattr(self, frame_attr):
                 getattr(self, frame_attr).destroy()
             self.level_select()
@@ -213,13 +219,44 @@ class window: # This class is used to create the window of the programme
         self.state = 4
         self.game_frame.destroy()
         self.level_select_frame = tk.Frame(self.window, background=self.bg_colour)
-        self.level_select_frame.pack()
-        button(self.level_select_frame, self.bt_colour, self.txt_colour, "Continue", Error)
-        for x in range(int(self.level)):
-            level_num = x
-            def inner_func(level_num=level_num):
-                self.game_start(int(level_num))
-            button(self.level_select_frame, self.bt_colour, self.txt_colour, "Level {}".format(x), inner_func)
+        self.level_select_frame.pack(fill="both", expand=True)
+        button(self.level_select_frame, self.bt_colour, self.txt_colour, "Continue", lambda: self.game_start(self.level))
+        if int(self.level) > 0:
+            self.btn = 0
+            self.middle_frame = tk.Frame(self.level_select_frame, background=self.bg_colour)
+            self.middle_frame.pack()
+            if int(self.level) <= 5:
+                self.lnc1 = tk.Frame(self.middle_frame, background=self.bg_colour)
+                self.lnc1.pack()
+            elif int(self.level) <= 10:
+                self.lnc1 = tk.Frame(self.middle_frame, background=self.bg_colour)
+                self.lnc2 = tk.Frame(self.middle_frame, background=self.bg_colour)
+                self.lnc1.pack(anchor="nw",side="left", padx=2)
+                self.lnc2.pack(anchor="ne", side="right", padx=2)
+            elif int(self.level) <= 15:
+                self.lnc1 = tk.Frame(self.middle_frame, background=self.bg_colour)
+                self.lnc2 = tk.Frame(self.middle_frame, background=self.bg_colour)
+                self.lnc3 = tk.Frame(self.middle_frame, background=self.bg_colour)
+                self.lnc1.pack(anchor="nw",side="left", padx=2)
+                self.lnc3.pack(anchor="ne", side="right", padx=2)
+                self.lnc2.pack(anchor="center", padx=2)
+            
+            for x in range(int(self.level)):
+                level_num = x
+                self.btn += 1
+                def inner_func(level_num=level_num):
+                    self.game_start(int(level_num))
+    
+                if self.btn <= 5:
+                    button(self.lnc1, self.bt_colour, self.txt_colour, "Level {}".format(x), inner_func)
+                elif self.btn <= 10:
+                    with suppress(AttributeError):
+                        button(self.lnc2, self.bt_colour, self.txt_colour, "Level {}".format(x), inner_func)
+                elif self.btn <= 15:
+                    with suppress(AttributeError):
+                        button(self.lnc3, self.bt_colour, self.txt_colour, "Level {}".format(x), inner_func)
+        else:
+            button(self.level_select_frame, self.bt_colour, self.txt_colour, "Level 0", lambda: self.game_start(0))
             
         button(self.level_select_frame, self.bt_colour, self.txt_colour, "Back", lambda: self.back(None))
 
@@ -237,6 +274,14 @@ class window: # This class is used to create the window of the programme
             
         elif level_num == 2:
             print("this is the second level")
+        elif level_num == 3:
+            print("this is the third level")
+        elif level_num == 4:
+            print("this is the fourth level")
+        elif level_num == 5:
+            print("this is the fifth level")
+        elif level_num == 6:
+            print("this is the sixth level")
     
     def previous_page_def(self):
         self.page_number -= 1
