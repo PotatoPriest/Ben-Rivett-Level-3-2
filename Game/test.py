@@ -280,7 +280,10 @@ class window: # This class is used to create the window of the programme
         if level_num == 0:
             self.level_0 = tk.Frame(self.window, background=self.bg_colour)
             self.level_0.pack(fill="both", expand=True)
-            label(self.level_0, self.bg_colour, self.txt_colour, """This is Level Zero""")
+            label(self.level_0, self.bg_colour, self.txt_colour, """This is Level Zero
+This program is going to teach you about A.I then
+it will quiz you on the information that you learnt.""")
+            button(self.level_0, self.bt_colour, self.txt_colour, "Start", lambda: self.game_content(level_num))
         elif level_num == 1:
             print("this is the first level")
             
@@ -294,6 +297,14 @@ class window: # This class is used to create the window of the programme
             print("this is the fifth level")
         elif level_num == 6:
             print("this is the sixth level")
+
+
+    def game_content(self, level_num): # This is where the content of the game will be
+        pass
+
+
+
+
     
     def previous_page_def(self): # This allows the user to go to the previous page
         self.page_number -= 1
@@ -370,7 +381,6 @@ to think and act like a human.""")
 
         # Update page label
         self.page_label.config(text="Page {}".format(self.page_number))
-
 
 main = window() # This calls the window class
 main.window.mainloop() # This runs the window
