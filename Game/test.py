@@ -31,6 +31,7 @@ class window: # This class is used to create the window of the programme
         self.window.geometry("400x300")
         self.score = 0
         self.level = 0
+        self.page_number = 0
         self.logged_in = False
         self.score_frame = tk.Frame(self.window)
         self.score_frame.pack(fill="both")
@@ -103,9 +104,9 @@ class window: # This class is used to create the window of the programme
 
         elif self.state == 6: # Game quiz state
             self.level_select_button.destroy()
-            frame_attr = f"level_{level_num}"
-            if hasattr(self, frame_attr):
-                getattr(self, frame_attr).destroy()
+            self.level_home.destroy()
+            with suppress():
+                self.game_learn_frame.destroy()
             self.level_select()
 
     def save_menu(self): # definition that creates the save menu
@@ -277,47 +278,30 @@ class window: # This class is used to create the window of the programme
         self.level_select_frame.destroy()
         self.level_select_button = tk.Button(self.score_frame, text="Level Select", command= lambda: self.back(level_num))
         self.level_select_button.pack(side="right")
-        if level_num == 0:
-            self.level_0 = tk.Frame(self.window, background=self.bg_colour)
-            self.level_0.pack(fill="both", expand=True)
-            label(self.level_0, self.bg_colour, self.txt_colour, """This is Level Zero
-This program is going to teach you about A.I then
-it will quiz you on the information that you learnt.""")
-            button(self.level_0, self.bt_colour, self.txt_colour, "Start", lambda: self.game_content(level_num))
-        elif level_num == 1:
-            print("this is the first level")
-            
-        elif level_num == 2:
-            print("this is the second level")
-        elif level_num == 3:
-            print("this is the third level")
-        elif level_num == 4:
-            print("this is the fourth level")
-        elif level_num == 5:
-            print("this is the fifth level")
-        elif level_num == 6:
-            print("this is the sixth level")
-
+        self.level_home = tk.Frame(self.window, background=self.bg_colour)
+        self.level_home.pack(fill="both", expand=True)
+        self.game_learn(level_num)
+        
 
     def game_content(self, level_num): # This is where the content of the game will be
-        pass
-
+        self.level_home.destroy()
+        self.game_content_frame = tk.Frame(self.window, background=self.bg_colour)
+        self.game_content_frame.pack(fill="both", expand=True)
 
 
 
     
-    def previous_page_def(self): # This allows the user to go to the previous page
+    def previous_page_def(self, level_num): # This allows the user to go to the previous page
         self.page_number -= 1
         self.page_label.config(text="Page: {}".format(self.page_number))
-        self.page()
+        self.page(level_num)
 
-    def next_page_def(self): # This allows the user to go to the next page
+    def next_page_def(self, level_num): # This allows the user to go to the next page
         self.page_number += 1
         self.page_label.config(text="Page: {}".format(self.page_number))
-        self.page()
+        self.page(level_num)
 
-    def game_learn(self): # This allows the user to learn about A.I (Might change the way this works later)
-        self.state = 5
+    def game_learn(self, level_num): # This allows the user to learn about A.I (Might change the way this works later)
         self.game_frame.destroy()
         self.page_number = 0
         self.game_learn_frame = tk.Frame(self.window, background=self.bg_colour)
@@ -325,17 +309,16 @@ it will quiz you on the information that you learnt.""")
         
         self.button_frame = tk.Frame(self.game_learn_frame, background=self.bg_colour)
         self.button_frame.pack(anchor="s", fill="both", side="bottom")
-        self.previous_page = tk.Button(self.button_frame, text="Previous Page", command=self.previous_page_def)
+        self.previous_page = tk.Button(self.button_frame, text="Previous Page", command=lambda: self.previous_page_def(level_num))
         self.previous_page.pack(side="left")
-        self.next_page = tk.Button(self.button_frame, text="Next Page", command=self.next_page_def)
+        self.next_page = tk.Button(self.button_frame, text="Next Page", command=lambda: self.next_page_def(level_num))
         self.next_page.pack(side="right")
-        self.back_button = tk.Button(self.button_frame, text="Back", command=lambda: self.back(None))
-        self.back_button.pack()
-        self.page_label = tk.Label(self.score_frame, text="Page {}".format(self.page_number))
-        self.page_label.pack(side = "right")
-        self.page()
+        
+        self.page_label = tk.Label(self.button_frame, text="Page {}".format(self.page_number))
+        self.page_label.pack()
+        self.page(level_num)
 
-    def page(self):
+    def page(self, level_num):
         # Disable previous and next buttons based on page_number
         if self.page_number <= 0:
             self.previous_page.config(state="disabled")
@@ -354,30 +337,31 @@ it will quiz you on the information that you learnt.""")
         # Create or show the appropriate content frame based on page_number
         frame_attr = f"content_frame_{self.page_number}"
 
-        if hasattr(self, frame_attr):
-            getattr(self, frame_attr).pack()
-        else:
-            # Create new content frame
-            new_frame = tk.Frame(self.game_learn_frame, background=self.bg_colour)
-            new_frame.pack()
-            setattr(self, frame_attr, new_frame)  # Save reference to the new frame
-
-            # Populate new frame with content based on page_number
-            if self.page_number == 0:
-                label(new_frame, self.bg_colour, self.txt_colour, """This section of the game is designed to teach you about
-Artificial Intelligence""")
-            elif self.page_number == 1:
-                label(new_frame, self.bg_colour, self.txt_colour, """The first thing you need to know about AI is that it is
-not a human brain. It is a computer program that is programmed
-to think and act like a human.""")
-            elif self.page_number == 2:
-                label(new_frame, self.bg_colour, self.txt_colour, """This is a test""")
-            elif self.page_number == 3:
-                label(new_frame, self.bg_colour, self.txt_colour, """This is a random sentence""")
-            elif self.page_number == 4:
-                label(new_frame, self.bg_colour, self.txt_colour, """This is another testing label""")
-            elif self.page_number == 5:
-                label(new_frame, self.bg_colour, self.txt_colour, """This is the final page""")
+        # Create new content frame
+        new_frame = tk.Frame(self.game_learn_frame, background=self.bg_colour)
+        new_frame.pack()
+        setattr(self, frame_attr, new_frame)  # Save reference to the new frame
+        
+        # Populate new frame with content based on page_number
+        if level_num == 0 and self.page_number == 0:
+            label(new_frame, self.bg_colour, self.txt_colour, """This is Level Zero
+This program is going to teach you about A.I then
+it will quiz you on the information that you learnt.
+This is the tutorial level, it will teach you how the program works.""")
+        elif level_num == 0 and self.page_number == 1:
+            label(new_frame, self.bg_colour, self.txt_colour, """Levels are split into two parts.
+The first part will teach you about an area of A.I then
+the second part will quiz you on the information that you learnt""")
+        elif level_num == 0 and self.page_number == 2:
+            label(new_frame, self.bg_colour, self.txt_colour, """page 3""")
+        elif level_num == 0 and self.page_number == 3:
+            label(new_frame, self.bg_colour, self.txt_colour, """page 4""")
+        elif level_num == 0 and self.page_number == 4:
+            label(new_frame, self.bg_colour, self.txt_colour, """Page 5""")
+        elif level_num == 0 and self.page_number == 5:
+            label(new_frame, self.bg_colour, self.txt_colour, """Page 6""")
+        elif level_num == 1 and self.page_number == 0:
+            label(new_frame, self.bg_colour, self.txt_colour, """This is Level One""")
 
         # Update page label
         self.page_label.config(text="Page {}".format(self.page_number))
