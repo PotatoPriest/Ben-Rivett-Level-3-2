@@ -105,8 +105,10 @@ class window: # This class is used to create the window of the programme
         elif self.state == 6: # Game quiz state
             self.level_select_button.destroy()
             self.level_home.destroy()
-            with suppress():
+            with suppress(AttributeError):
                 self.game_learn_frame.destroy()
+            with suppress(AttributeError):
+                self.game_content_frame.destroy()
             self.level_select()
 
     def save_menu(self): # definition that creates the save menu
@@ -284,10 +286,14 @@ class window: # This class is used to create the window of the programme
         
 
     def game_content(self, level_num): # This is where the content of the game will be
-        self.level_home.destroy()
+        self.game_learn_frame.destroy()
         self.game_content_frame = tk.Frame(self.window, background=self.bg_colour)
         self.game_content_frame.pack(fill="both", expand=True)
-
+        if level_num == 0:
+            label(self.game_content_frame, self.bg_colour, self.txt_colour, "Game Content")
+            
+        elif level_num == 1:
+            label(self.game_content_frame, self.bg_colour, self.txt_colour, "Level 1 Game Content")
 
 
     
@@ -320,16 +326,21 @@ class window: # This class is used to create the window of the programme
 
     def page(self, level_num):
         # Disable previous and next buttons based on page_number
+        if level_num == 0:
+            self.page_range = 5
+        elif level_num == 1:
+            self.page_range = 2
+            
         if self.page_number <= 0:
             self.previous_page.config(state="disabled")
-        elif self.page_number >= 5:
+        elif self.page_number >= self.page_range:
             self.next_page.config(state="disabled")
         else:
             self.previous_page.config(state="active")
             self.next_page.config(state="active")
 
         # Hide all content frames
-        for frame_num in range(6):
+        for frame_num in range(self.page_range + 1):
             frame_attr = f"content_frame_{frame_num}"
             if hasattr(self, frame_attr):
                 getattr(self, frame_attr).pack_forget()
@@ -344,8 +355,7 @@ class window: # This class is used to create the window of the programme
         
         # Populate new frame with content based on page_number
         if level_num == 0 and self.page_number == 0:
-            label(new_frame, self.bg_colour, self.txt_colour, """This is Level Zero
-This program is going to teach you about A.I then
+            label(new_frame, self.bg_colour, self.txt_colour, """This program is going to teach you about A.I then
 it will quiz you on the information that you learnt.
 This is the tutorial level, it will teach you how the program works.""")
         elif level_num == 0 and self.page_number == 1:
@@ -353,15 +363,34 @@ This is the tutorial level, it will teach you how the program works.""")
 The first part will teach you about an area of A.I then
 the second part will quiz you on the information that you learnt""")
         elif level_num == 0 and self.page_number == 2:
-            label(new_frame, self.bg_colour, self.txt_colour, """page 3""")
+            label(new_frame, self.bg_colour, self.txt_colour, """This tuorial will teach you the definition of A.I.
+The definiion of A.I acording to Google is:
+'The theory and development of computer systems
+able to perform tasks normally requiring human intelligence,
+such as visual perception, speech recognition,
+decision-making, and translation between languages.'""")
         elif level_num == 0 and self.page_number == 3:
-            label(new_frame, self.bg_colour, self.txt_colour, """page 4""")
+            label(new_frame, self.bg_colour, self.txt_colour, """An example of a quesion that could be asked is:
+What was an example of a task A.I could perform acording
+to it's definition?
+
+A) Translation between languages
+B) Creaing a digital picture
+C) Speaking to a human
+D) Playing a game""")
         elif level_num == 0 and self.page_number == 4:
-            label(new_frame, self.bg_colour, self.txt_colour, """Page 5""")
+            label(new_frame, self.bg_colour, self.txt_colour, """The correct answer would be 
+A) Translation between languages
+This is becasue it was the only one of the four that was
+present in the provided definiion.""")
         elif level_num == 0 and self.page_number == 5:
-            label(new_frame, self.bg_colour, self.txt_colour, """Page 6""")
+            label(new_frame, self.bg_colour, self.txt_colour, """Next you will be quized on what you learnt.
+Click the buttton bellow to move onto
+the quiz secion of the level.""")
+            button(new_frame, self.bt_colour, self.txt_colour, "Start Quiz", lambda: self.game_content(level_num))
         elif level_num == 1 and self.page_number == 0:
             label(new_frame, self.bg_colour, self.txt_colour, """This is Level One""")
+            button(new_frame, self.bt_colour, self.txt_colour, "Start Quiz", lambda: self.game_content(level_num))
 
         # Update page label
         self.page_label.config(text="Page {}".format(self.page_number))
