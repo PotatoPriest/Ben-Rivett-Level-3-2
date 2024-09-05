@@ -5,6 +5,7 @@
 # State guide : 0 = Main Menu, 1 = Game, 2 = Settings, 3 = Save, 4 = Level Select, 5 = Game Learn
 
 # Importing required things
+import random
 import tkinter as tk
 from contextlib import suppress
 from tkinter import TclError, messagebox, simpledialog
@@ -277,6 +278,7 @@ class window: # This class is used to create the window of the programme
 
     def game_start(self, level_num): # This is what happens when the user pickes a level
         self.state = 6
+        self.question_number = 1
         self.level_select_frame.destroy()
         self.level_select_button = tk.Button(self.score_frame, text="Level Select", command= lambda: self.back(level_num))
         self.level_select_button.pack(side="right")
@@ -289,14 +291,54 @@ class window: # This class is used to create the window of the programme
         self.game_learn_frame.destroy()
         self.game_content_frame = tk.Frame(self.window, background=self.bg_colour)
         self.game_content_frame.pack(fill="both", expand=True)
-        if level_num == 0:
-            label(self.game_content_frame, self.bg_colour, self.txt_colour, "Game Content")
+        if level_num == 0 and self.question_number == 1:
+            self.randomize_answers(level_num)
             
+            label(self.game_content_frame, self.bg_colour, self.txt_colour, """Question 1:
+What was an example of a task A.I could preform
+acording to it's definition?""")
+            button(self.game_content_frame, self.bt_colour, self.txt_colour, "A) {}".format(self.q1), lambda: self.answer_check(self.answer_list[self.q1], level_num))
+            button(self.game_content_frame, self.bt_colour, self.txt_colour, "B) {}".format(self.q2), lambda: self.answer_check(self.answer_list[self.q2], level_num))
+            button(self.game_content_frame, self.bt_colour, self.txt_colour, "C) {}".format(self.q3), lambda: self.answer_check(self.answer_list[self.q3], level_num))
+            button(self.game_content_frame, self.bt_colour, self.txt_colour, "D) {}".format(self.q4), lambda: self.answer_check(self.answer_list[self.q4], level_num))
+            
+        elif level_num == 0 and self.question_number == 2:
+            label(self.game_content_frame, self.bg_colour, self.txt_colour, "This is the second question")
+            button(self.game_content_frame, self.bt_colour, self.txt_colour, "Correct Answer", lambda: self.answer_check(True, level_num))
+            button(self.game_content_frame, self.bt_colour, self.txt_colour, "Incorrect Answer", lambda: self.answer_check(False, level_num))
+        
         elif level_num == 1:
             label(self.game_content_frame, self.bg_colour, self.txt_colour, "Level 1 Game Content")
 
+    def randomize_answers(self, level_num):
+        if level_num == 0:
+            self.answer_list = {"Translation between languages" : True, "Creating a digital picture" : False, "Speaking to a human" : False, "Playing a Game" : False}
+            self.shuffle_dict()
 
+    def shuffle_dict(self):
+        self.test = []
+        for keys in self.answer_list:
+            self.test.append(keys)
+            random.shuffle(self.test)
+        self.q1 = self.test[0]
+        self.q2 = self.test[1]
+        self.q3 = self.test[2]
+        self.q4 = self.test[3]
+        
     
+    def answer_check(self, correct, level_num):
+        if correct:
+            self.score_add()
+            self.question_number += 1
+            self.game_content_frame.destroy()
+            messagebox.showinfo("Correct", "That was the correct answer!")
+            self.game_content(level_num)
+        else:
+            self.question_number += 1
+            messagebox.showinfo("Incorrect", "Sorry, you got it wrong")
+            self.game_content_frame.destroy()
+            self.game_content(level_num)
+        
     def previous_page_def(self, level_num): # This allows the user to go to the previous page
         self.page_number -= 1
         self.page_label.config(text="Page: {}".format(self.page_number))
