@@ -306,13 +306,24 @@ acording to it's definition?""")
             label(self.game_content_frame, self.bg_colour, self.txt_colour, "This is the second question")
             button(self.game_content_frame, self.bt_colour, self.txt_colour, "Correct Answer", lambda: self.answer_check(True, level_num))
             button(self.game_content_frame, self.bt_colour, self.txt_colour, "Incorrect Answer", lambda: self.answer_check(False, level_num))
+
+        elif level_num == 1 and self.question_number == 1:
+            self.randomize_answers(level_num)
+
+            label(self.game_content_frame, self.bg_colour, self.txt_colour, """Question 2:
+Is this level 1?""")
+            button(self.game_content_frame, self.bt_colour, self.txt_colour, "A) {}".format(self.q1), lambda: self.answer_check(self.answer_list[self.q1], level_num))
+            button(self.game_content_frame, self.bt_colour, self.txt_colour, "B) {}".format(self.q2), lambda: self.answer_check(self.answer_list[self.q2], level_num))
         
-        elif level_num == 1:
-            label(self.game_content_frame, self.bg_colour, self.txt_colour, "Level 1 Game Content")
+        else:
+            self.level_end(level_num)
 
     def randomize_answers(self, level_num):
         if level_num == 0:
             self.answer_list = {"Translation between languages" : True, "Creating a digital picture" : False, "Speaking to a human" : False, "Playing a Game" : False}
+            self.shuffle_dict()
+        elif level_num == 1:
+            self.answer_list = {"Yes" : True, "No" : False}
             self.shuffle_dict()
 
     def shuffle_dict(self):
@@ -320,10 +331,14 @@ acording to it's definition?""")
         for keys in self.answer_list:
             self.test.append(keys)
             random.shuffle(self.test)
+            random.shuffle(self.test)
+            
         self.q1 = self.test[0]
         self.q2 = self.test[1]
-        self.q3 = self.test[2]
-        self.q4 = self.test[3]
+        with suppress(IndexError):
+            self.q3 = self.test[2]
+        with suppress(IndexError):
+            self.q4 = self.test[3]
         
     
     def answer_check(self, correct, level_num):
@@ -338,7 +353,22 @@ acording to it's definition?""")
             messagebox.showinfo("Incorrect", "Sorry, you got it wrong")
             self.game_content_frame.destroy()
             self.game_content(level_num)
-        
+
+    def level_end(self, level_num):
+        self.level_select_button.destroy()
+        label(self.game_content_frame, self.bg_colour, self.txt_colour, "Congratulations! You have completed level {}".format(level_num))
+        button(self.game_content_frame, self.bt_colour, self.txt_colour, "Next Level", lambda: self.next_level(level_num))
+        button(self.game_content_frame, self.bt_colour, self.txt_colour, "Level Select", lambda: self.back(level_num))
+
+    def next_level(self, level_num):
+        if self.level == level_num:
+            self.level_add()
+        level_num += 1
+        self.game_content_frame.destroy()
+        self.game_learn_frame.destroy()
+        self.level_home.destroy()
+        self.game_start(level_num)
+    
     def previous_page_def(self, level_num): # This allows the user to go to the previous page
         self.page_number -= 1
         self.page_label.config(text="Page: {}".format(self.page_number))
