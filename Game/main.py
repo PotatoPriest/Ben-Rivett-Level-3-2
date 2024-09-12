@@ -72,7 +72,7 @@ class window: # This class is used to create the window of the programme
         self.menu_frame = tk.Frame(self.window, background=self.bg_colour)
         self.menu_frame.pack(fill="both", expand=True)
         label(self.menu_frame, self.bg_colour, self.txt_colour, "Main Menu")
-        button(self.menu_frame, self.bt_colour, self.txt_colour, "Play", self.game_menu)
+        button(self.menu_frame, self.bt_colour, self.txt_colour, "Play", self.level_select)
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Save", self.save_menu)
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Settings", self.settings_menu)
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Exit", lambda: self.back(None))
@@ -83,7 +83,7 @@ class window: # This class is used to create the window of the programme
                 self.window.destroy()
 
         elif self.state == 1: # Game state
-            self.game_frame.destroy()
+            self.level_select.destroy()
             self.main_menu()
 
         elif self.state == 2: # Save menu state
@@ -96,14 +96,9 @@ class window: # This class is used to create the window of the programme
 
         elif self.state == 4: # Level select state
             self.level_select_frame.destroy()
-            self.game_menu()
+            self.main_menu()
 
-        elif self.state == 5: # Game learn state
-            self.game_learn_frame.destroy()
-            self.page_label.destroy()
-            self.game_menu()
-
-        elif self.state == 6: # Game quiz state
+        elif self.state == 5: # Game quiz state
             self.level_select_button.destroy()
             self.level_home.destroy()
             with suppress(AttributeError):
@@ -218,20 +213,10 @@ class window: # This class is used to create the window of the programme
         self.settings_menu()
         self.colour_window.destroy()
 
-    
-    def game_menu(self): # This menu allows the player to pick which part of the game they want to play
-        self.state = 1
-        self.menu_frame.destroy()
-        self.game_frame = tk.Frame(self.window, background=self.bg_colour)
-        self.game_frame.pack(fill="both", expand=True)
-        button(self.game_frame, self.bt_colour, self.txt_colour, "Play", self.level_select)
-        button(self.game_frame, self.bt_colour, self.txt_colour, "Learn", self.game_learn)
-        button(self.game_frame, self.bt_colour, self.txt_colour, "Back", lambda: self.back(None))
-
     def level_select(self): # This allows the user to select a level or continue where they left off
         self.state = 4
         self.btn = 0
-        self.game_frame.destroy()
+        self.menu_frame.destroy()
         self.level_select_frame = tk.Frame(self.window, background=self.bg_colour)
         self.level_select_frame.pack(fill="both", expand=True)
         self.top_frame = tk.Frame(self.level_select_frame, background=self.bg_colour)
@@ -277,7 +262,7 @@ class window: # This class is used to create the window of the programme
         button(self.level_select_frame, self.bt_colour, self.txt_colour, "Back", lambda: self.back(None))
 
     def game_start(self, level_num): # This is what happens when the user pickes a level
-        self.state = 6
+        self.state = 5
         self.question_number = 1
         self.level_select_frame.destroy()
         self.level_select_button = tk.Button(self.score_frame, text="Level Select", command= lambda: self.back(level_num))
@@ -380,7 +365,7 @@ Is this level 1?""")
         self.page(level_num)
 
     def game_learn(self, level_num): # This allows the user to learn about A.I (Might change the way this works later)
-        self.game_frame.destroy()
+        self.menu_frame.destroy()
         self.page_number = 0
         self.game_learn_frame = tk.Frame(self.window, background=self.bg_colour)
         self.game_learn_frame.pack(fill="both", expand=True)
