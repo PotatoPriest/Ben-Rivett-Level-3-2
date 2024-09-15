@@ -8,6 +8,7 @@
 import tkinter as tk
 from tkinter import TclError, messagebox, simpledialog
 
+<<<<<<< Updated upstream
 from replit import db
 
 option_menu = ["Select", "Learn", "Quiz"]
@@ -23,6 +24,8 @@ def empty_db():
     print_db_keys()
 
 
+=======
+>>>>>>> Stashed changes
 def label(master, background, foreground, text): # This definition is used to create a label
     label = tk.Label(master=master, background=background, foreground=foreground, text=text)
     label.pack(pady=3)
@@ -367,4 +370,3 @@ to think and act like a human.""")
 
 main = window() # This calls the window class
 main.window.mainloop() # This runs the window
-
