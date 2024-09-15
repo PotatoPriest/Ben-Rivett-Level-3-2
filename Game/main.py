@@ -34,18 +34,18 @@ class window: # This class is used to create the window of the programme
         self.level = 0
         self.page_number = 0
         self.logged_in = False
-        self.score_frame = tk.Frame(self.window)
+        self.score_frame = tk.Frame(self.window, background = self.bg_colour)
         self.score_frame.pack(fill="both")
-        self.score_label = tk.Label(self.score_frame, text="Score: " + str(self.score))
+        self.score_label = tk.Label(self.score_frame, text="Score: " + str(self.score), background = self.bg_colour)
         self.score_label.pack(anchor="nw", side = "left")
-        self.level_label = tk.Label(self.score_frame, text="Level: " + str(self.level))
+        self.level_label = tk.Label(self.score_frame, text="Level: " + str(self.level), background = self.bg_colour)
         self.level_label.pack(anchor="ne", side = "right")
         self.score_button = tk.Button(self.score_frame, text="Score +1", command=self.score_add)
         self.score_button.pack(anchor="nw", side = "left")
         self.level_button = tk.Button(self.score_frame, text="Level +1", command=self.level_add)
         self.level_button.pack(anchor="ne", side = "right")
         self.main_menu()
-        self.dummy_colour_check = tk.Label(self.score_frame, text="")
+        self.dummy_colour_check = tk.Label(self.score_frame, text="", background = self.bg_colour)
         self.dummy_colour_check.pack(anchor="ne", side = "right")
 
     def level_add(self): # This function is used to add a level
@@ -221,9 +221,9 @@ class window: # This class is used to create the window of the programme
         self.level_select_frame.pack(fill="both", expand=True)
         self.top_frame = tk.Frame(self.level_select_frame, background=self.bg_colour)
         self.top_frame.pack()
-        self.continue_button = tk.Button(self.top_frame, text="Continue", command= lambda: self.game_start(self.level))
+        self.continue_button = tk.Button(self.top_frame, text="Continue", command= lambda: self.game_start(self.level), background = self.bt_colour, foreground = self.txt_colour)
         self.continue_button.pack(side="right")
-        self.button_zero = tk.Button(self.top_frame, text="Level 0", command=lambda: self.game_start(0))
+        self.button_zero = tk.Button(self.top_frame, text="Level 0", command=lambda: self.game_start(0), background = self.bt_colour, foreground = self.txt_colour)
         self.button_zero.pack(side="left")
         if int(self.level) > 0:
             self.middle_frame = tk.Frame(self.level_select_frame, background=self.bg_colour)
@@ -265,8 +265,8 @@ class window: # This class is used to create the window of the programme
         self.state = 5
         self.question_number = 1
         self.level_select_frame.destroy()
-        self.level_select_button = tk.Button(self.score_frame, text="Level Select", command= lambda: self.back(level_num))
-        self.level_select_button.pack(side="right")
+        self.level_select_button = tk.Button(self.score_frame, text="Level Select", command= lambda: self.back(level_num), background = self.bt_colour, foreground = self.txt_colour)
+        self.level_select_button.pack()
         self.level_home = tk.Frame(self.window, background=self.bg_colour)
         self.level_home.pack(fill="both", expand=True)
         self.game_learn(level_num)
@@ -342,12 +342,12 @@ Is this level 1?""")
     def level_end(self, level_num):
         self.level_select_button.destroy()
         label(self.game_content_frame, self.bg_colour, self.txt_colour, "Congratulations! You have completed level {}".format(level_num))
+        if self.level == level_num:
+            self.level_add()
         button(self.game_content_frame, self.bt_colour, self.txt_colour, "Next Level", lambda: self.next_level(level_num))
         button(self.game_content_frame, self.bt_colour, self.txt_colour, "Level Select", lambda: self.back(level_num))
 
     def next_level(self, level_num):
-        if self.level == level_num:
-            self.level_add()
         level_num += 1
         self.game_content_frame.destroy()
         self.game_learn_frame.destroy()
@@ -372,12 +372,12 @@ Is this level 1?""")
         
         self.button_frame = tk.Frame(self.game_learn_frame, background=self.bg_colour)
         self.button_frame.pack(anchor="s", fill="both", side="bottom")
-        self.previous_page = tk.Button(self.button_frame, text="Previous Page", command=lambda: self.previous_page_def(level_num))
+        self.previous_page = tk.Button(self.button_frame, text="Previous Page", command=lambda: self.previous_page_def(level_num), background = self.bt_colour, foreground = self.txt_colour)
         self.previous_page.pack(side="left")
-        self.next_page = tk.Button(self.button_frame, text="Next Page", command=lambda: self.next_page_def(level_num))
+        self.next_page = tk.Button(self.button_frame, text="Next Page", command=lambda: self.next_page_def(level_num), background = self.bt_colour, foreground = self.txt_colour)
         self.next_page.pack(side="right")
         
-        self.page_label = tk.Label(self.button_frame, text="Page {}".format(self.page_number))
+        self.page_label = tk.Label(self.button_frame, text="Page {}".format(self.page_number), background = self.bg_colour, foreground = self.txt_colour)
         self.page_label.pack()
         self.page(level_num)
 
