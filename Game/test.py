@@ -401,7 +401,7 @@ Is this level 1?""")
         frame_attr = f"content_frame_{self.page_number}"
 
         # Create new content frame
-        new_frame = tk.Frame(self.game_learn_frame, background="red")
+        new_frame = tk.Frame(self.game_learn_frame, background=self.bg_colour)
         new_frame.pack(fill = "both", expand = True)
         setattr(self, frame_attr, new_frame)  # Save reference to the new frame
         # Populate new frame with content based on page_number
