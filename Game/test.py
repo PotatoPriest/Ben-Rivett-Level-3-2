@@ -43,9 +43,16 @@ class window: # This class is used to create the window of the programme
         self.score_button.pack(anchor="nw", side = "left")
         self.level_button = tk.Button(self.score_frame, text="Level +1", command=self.level_add)
         self.level_button.pack(anchor="ne", side = "right")
+        self.hide_button = tk.Button(self.score_frame, text = "Hide", command=self.hide)
+        self.hide_button.pack()
         self.main_menu()
         self.dummy_colour_check = tk.Label(self.score_frame, text="", background = self.bg_colour)
         self.dummy_colour_check.pack(anchor="ne", side = "right")
+
+    def hide(self):
+        self.score_button.destroy()
+        self.level_button.destroy()
+        self.hide_button.destroy()
 
     def level_add(self): # This function is used to add a level
         if int(self.level) < 15:
