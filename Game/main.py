@@ -401,14 +401,21 @@ Is this level 1?""")
         frame_attr = f"content_frame_{self.page_number}"
 
         # Create new content frame
-        new_frame = tk.Frame(self.game_learn_frame, background=self.bg_colour)
+        new_frame = tk.Frame(self.game_learn_frame, background="red")
         new_frame.pack(fill = "both", expand = True)
         setattr(self, frame_attr, new_frame)  # Save reference to the new frame
         # Populate new frame with content based on page_number
+        def frame_for_thing(self, side, fill, expand):
+            frame = tk.Frame(new_frame, bg = self.bg_colour)
+            frame.pack(side = side, fill = fill, expand = expand)
+            return frame
         if level_num == 0 and self.page_number == 0:
             self.image_to_replace = tk.Label(new_frame, text = "Press this to go back to the level select")
             self.image_to_replace.pack(anchor = "n")
-            label(new_frame, self.bg_colour, self.txt_colour, "sw", """This program is going to teach you about A.I then
+            #test_frame = tk.Frame(new_frame, bg = "green")
+            #test_frame.pack(side = "top", fill = None, expand = True)
+
+            label(new_frame, self.bg_colour, self.txt_colour, "n", """This program is going to teach you about A.I then
 it will quiz you on the information that you learnt.
 This is the tutorial level, it will teach you how the program works.""")
         elif level_num == 0 and self.page_number == 1:
@@ -417,7 +424,7 @@ The first part will teach you about an area of A.I then
 the second part will quiz you on the information that you learnt""")
         elif level_num == 0 and self.page_number == 2:
             label(new_frame, self.bg_colour, self.txt_colour, "center", """This tuorial will teach you the definition of A.I.
-The definiion of A.I acording to Google is:
+The definiion of A.I according to Google is:
 'The theory and development of computer systems
 able to perform tasks normally requiring human intelligence,
 such as visual perception, speech recognition,
