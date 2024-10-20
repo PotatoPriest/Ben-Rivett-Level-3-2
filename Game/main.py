@@ -87,7 +87,7 @@ class window: # This class is used to create the window of the programme
                 self.window.destroy()
 
         elif self.state == 1: # Game state
-            self.level_select.destroy()
+            self.level_select_frame.destroy()
             self.main_menu()
 
         elif self.state == 2: # Save menu state
