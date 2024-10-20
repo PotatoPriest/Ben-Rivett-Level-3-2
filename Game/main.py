@@ -18,6 +18,11 @@ def button(master, background, foreground, text, command): # This definition is 
     button = tk.Button(master=master, background=background, foreground=foreground, text=text, command=command)
     button.pack(pady=3)
 
+def reusable_frame(master, side, fill, expand, background): # This definition is used to create a frame
+            frame = tk.Frame(master, background = background)
+            frame.pack(side = side, fill = fill, expand = expand)
+            return frame
+
 def Error(): # This definition is used to error catch
     messagebox.showerror(title="Error", message="There has been an error")
 
@@ -219,7 +224,7 @@ class window: # This class is used to create the window of the programme
         self.level_select_frame.pack(fill="both", expand=True)
         self.top_frame = tk.Frame(self.level_select_frame, background=self.bg_colour)
         self.top_frame.pack()
-        self.continue_button = tk.Button(self.top_frame, text="Continue", command= lambda: self.game_start(self.level), background = self.bt_colour, foreground = self.txt_colour)
+        self.continue_button = tk.Button(self.top_frame, text="Continue", command= lambda: self.game_start(int(self.level)), background = self.bt_colour, foreground = self.txt_colour)
         self.continue_button.pack(side="right")
         self.button_zero = tk.Button(self.top_frame, text="Tutorial", command=lambda: self.game_start(0), background = self.bt_colour, foreground = self.txt_colour)
         self.button_zero.pack(side="left")
@@ -405,19 +410,15 @@ Is this level 1?""")
         new_frame.pack(fill = "both", expand = True)
         setattr(self, frame_attr, new_frame)  # Save reference to the new frame
         # Populate new frame with content based on page_number
-        def frame_for_thing(self, side, fill, expand):
-            frame = tk.Frame(new_frame, bg = self.bg_colour)
-            frame.pack(side = side, fill = fill, expand = expand)
-            return frame
+
         if level_num == 0 and self.page_number == 0:
             self.image_to_replace = tk.Label(new_frame, text = "Press this to go back to the level select")
             self.image_to_replace.pack(anchor = "n")
-            #test_frame = tk.Frame(new_frame, bg = "green")
-            #test_frame.pack(side = "top", fill = None, expand = True)
-
-            label(new_frame, self.bg_colour, self.txt_colour, "n", """This program is going to teach you about A.I then
+            format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
+            label(format_frame, self.bg_colour, self.txt_colour, "n", """This program is going to teach you about A.I then
 it will quiz you on the information that you learnt.
 This is the tutorial level, it will teach you how the program works.""")
+            button(new_frame, self.bt_colour, self.txt_colour, "Remove frame", lambda: self.remove_frame(format_frame))
         elif level_num == 0 and self.page_number == 1:
             label(new_frame, self.bg_colour, self.txt_colour, "center", """Levels are split into two parts.
 The first part will teach you about an area of A.I then
@@ -454,6 +455,7 @@ the quiz secion of the level.""")
 
         # Update page label
         self.page_label.config(text="Page {}".format(self.page_number))
-
+    def remove_frame(self, thing):
+        thing.destroy()
 main = window() # This calls the window class
 main.window.mainloop() # This runs the window
