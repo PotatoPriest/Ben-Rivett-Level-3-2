@@ -8,7 +8,8 @@
 import random
 import tkinter as tk
 from contextlib import suppress
-from tkinter import TclError, messagebox, simpledialog
+from tkinter import TclError, messagebox
+from tkinter.simpledialog import askstring
 
 def label(master, background, foreground, anchor, text): # This definition is used to create a label
     label = tk.Label(master=master, background=background, foreground=foreground, text=text)
@@ -17,6 +18,11 @@ def label(master, background, foreground, anchor, text): # This definition is us
 def button(master, background, foreground, text, command): # This definition is used to create a button
     button = tk.Button(master=master, background=background, foreground=foreground, text=text, command=command)
     button.pack(pady=3)
+
+def reusable_frame(master, side, fill, expand, background): # This definition is used to create a frame
+            frame = tk.Frame(master, background = background)
+            frame.pack(side = side, fill = fill, expand = expand)
+            return frame
 
 def Error(): # This definition is used to error catch
     messagebox.showerror(title="Error", message="There has been an error")
@@ -190,7 +196,7 @@ class window: # This class is used to create the window of the programme
         button(self.colour_frame, self.bt_colour, self.txt_colour, "Custom", self.custom_colour)
 
     def custom_colour(self): # this definition allows the user to set a custom colour
-        self.custom = simpledialog.askstring("Custom Colour", "Enter a hex code for the colour")
+        self.custom = askstring("Custom Colour", "Enter a hex code for the colour")
 
         if self.custom is None:
             messagebox.showerror("Error", "No hex code entered")
@@ -415,7 +421,8 @@ Is this level 1?""")
         if level_num == 0 and self.page_number == 0:
             self.image_to_replace = tk.Label(new_frame, text = "Press this to go back to the level select")
             self.image_to_replace.pack(anchor = "n")
-            label(new_frame, self.bg_colour, self.txt_colour, "sw", """This program is going to teach you about A.I then
+            format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
+            label(format_frame, self.bg_colour, self.txt_colour, "sw", """This program is going to teach you about A.I then
 it will quiz you on the information that you learnt.
 This is the tutorial level, it will teach you how the program works.""")
         elif level_num == 0 and self.page_number == 1:
