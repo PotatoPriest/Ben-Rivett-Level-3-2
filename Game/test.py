@@ -8,8 +8,9 @@
 import random
 import tkinter as tk
 from contextlib import suppress
-from tkinter import TclError, messagebox
+from tkinter import TclError, messagebox, PhotoImage
 from tkinter.simpledialog import askstring
+from PIL import ImageTk, Image
 
 def label(master, background, foreground, anchor, text): # This definition is used to create a label
     label = tk.Label(master=master, background=background, foreground=foreground, text=text)
@@ -19,10 +20,24 @@ def button(master, background, foreground, text, command): # This definition is 
     button = tk.Button(master=master, background=background, foreground=foreground, text=text, command=command)
     button.pack(pady=3)
 
+def button_img(master, text, background, text_colour, command, path, side, x, y): # definition for making a button with an image attached
+    img = ImageTk.PhotoImage(Image.open(path).resize((x, y)))
+    bt = tk.Button(master, text=text, command=command, background=background, foreground=text_colour, image=img, compound=side)
+    bt.image = img
+    bt.pack(pady=2)
+
 def reusable_frame(master, side, fill, expand, background): # This definition is used to create a frame
             frame = tk.Frame(master, background = background)
             frame.pack(side = side, fill = fill, expand = expand)
             return frame
+
+def insertable_image(master, path, x, y): # this imports an image to be used in code
+    imageframe = tk.Frame(master)
+    img = ImageTk.PhotoImage(Image.open(path).resize((x, y)))
+    image = tk.Label(imageframe, image=img)
+    image.image = img
+    image.pack()
+    imageframe.pack()
 
 def Error(): # This definition is used to error catch
     messagebox.showerror(title="Error", message="There has been an error")
@@ -49,16 +64,16 @@ class window: # This class is used to create the window of the programme
         self.score_button.pack(anchor="nw", side = "left")
         self.level_button = tk.Button(self.score_frame, text="Level +1", command=self.level_add)
         self.level_button.pack(anchor="ne", side = "right")
-        self.hide_button = tk.Button(self.score_frame, text = "Hide", command=self.hide)
-        self.hide_button.pack()
+        #self.hide_button = tk.Button(self.score_frame, text = "Hide", command=self.hide)
+        #self.hide_button.pack()
         self.main_menu()
         self.dummy_colour_check = tk.Label(self.score_frame, text="", background = self.bg_colour)
         self.dummy_colour_check.pack(anchor="ne", side = "right")
 
-    def hide(self):
-        self.score_button.destroy()
-        self.level_button.destroy()
-        self.hide_button.destroy()
+#    def hide(self):
+#        self.score_button.destroy()
+#        self.level_button.destroy()
+#        self.hide_button.destroy()
 
     def level_add(self): # This function is used to add a level
         if int(self.level) < 15:
@@ -85,9 +100,17 @@ class window: # This class is used to create the window of the programme
         self.menu_frame.pack(fill="both", expand=True)
         label(self.menu_frame, self.bg_colour, self.txt_colour, "n", "Main Menu")
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Play", self.level_select)
+        button(self.menu_frame, self.bt_colour, self.txt_colour, "Test", self.test_def)
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Save", self.save_menu)
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Settings", self.settings_menu)
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Exit", lambda: self.back(None))
+
+    def test_def(self): !!!!!! THis needs fixing
+        self.menu_frame.destroy()
+        img = ImageTk.PhotoImage(Image.open("Game\Images\Black-Translucent-50.png"))
+        self.canvas_test = tk.Canvas(self.window)
+        self.canvas_test.pack()
+        self.canvas_test.create_image(img)
 
     def back(self, level_num): # definition that allows the user to go back a menu
         if self.state == 0: # Main Menu state
