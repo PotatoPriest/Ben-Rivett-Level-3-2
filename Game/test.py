@@ -31,13 +31,16 @@ def reusable_frame(master, side, fill, expand, background): # This definition is
             frame.pack(side = side, fill = fill, expand = expand)
             return frame
 
-def insertable_image(master, path, x, y): # this imports an image to be used in code
-    imageframe = tk.Frame(master)
+def insertable_image(master, path, x, y, fill, expand, background): # this imports an image to be used in code
+    imageframe = tk.Frame(master, background = background)
     img = ImageTk.PhotoImage(Image.open(path).resize((x, y)))
     image = tk.Label(imageframe, image=img)
     image.image = img
     image.pack()
-    imageframe.pack()
+    imageframe.pack(fill=fill, expand=expand)
+    #test_image = Image.open("Game\Images\test_image.png") hmm this is weird
+    #print(test_image.mode)
+    return imageframe
 
 def Error(): # This definition is used to error catch
     messagebox.showerror(title="Error", message="There has been an error")
@@ -56,6 +59,12 @@ class window: # This class is used to create the window of the programme
         self.logged_in = False
         self.score_frame = tk.Frame(self.window, background = self.bg_colour)
         self.score_frame.pack(fill="x")
+
+        self.testing = insertable_image(self.window, "Game\Images\Black-Translucent-50.png", 400, 100, "x", False, "red")
+        
+
+
+
         self.score_label = tk.Label(self.score_frame, text="Score: " + str(self.score), background = self.bg_colour)
         self.score_label.pack(anchor="nw", side = "left")
         self.level_label = tk.Label(self.score_frame, text="Level: " + str(self.level), background = self.bg_colour)
@@ -105,12 +114,14 @@ class window: # This class is used to create the window of the programme
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Settings", self.settings_menu)
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Exit", lambda: self.back(None))
 
-    def test_def(self): !!!!!! THis needs fixing
+    def test_def(self):
         self.menu_frame.destroy()
         img = ImageTk.PhotoImage(Image.open("Game\Images\Black-Translucent-50.png"))
-        self.canvas_test = tk.Canvas(self.window)
-        self.canvas_test.pack()
-        self.canvas_test.create_image(img)
+        self.canvas = tk.Canvas(self.window, width = 250, height = 250, background = "red")
+        self.canvas.pack()
+        self.canvas.create_image(125,125,image=img)
+        self.canvas.image = img
+
 
     def back(self, level_num): # definition that allows the user to go back a menu
         if self.state == 0: # Main Menu state
