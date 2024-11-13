@@ -8,7 +8,11 @@
 import random
 import tkinter as tk
 from contextlib import suppress
-from tkinter import TclError, messagebox, simpledialog
+from tkinter import TclError, messagebox
+from tkinter.simpledialog import askstring
+
+from PIL import Image, ImageTk
+
 
 def label(master, background, foreground, anchor, text): # This definition is used to create a label
     label = tk.Label(master=master, background=background, foreground=foreground, text=text)
@@ -18,10 +22,27 @@ def button(master, background, foreground, text, command): # This definition is 
     button = tk.Button(master=master, background=background, foreground=foreground, text=text, command=command)
     button.pack(pady=3)
 
+def button_img(master, text, background, text_colour, command, path, side, x, y): # definition for making a button with an image attached
+    img = ImageTk.PhotoImage(Image.open(path).resize((x, y)))
+    bt = tk.Button(master, text=text, command=command, background=background, foreground=text_colour, image=img, compound=side) # type: ignore
+    bt.image = img
+    bt.pack(pady=2)
+
 def reusable_frame(master, side, fill, expand, background): # This definition is used to create a frame
-            frame = tk.Frame(master, background = background)
-            frame.pack(side = side, fill = fill, expand = expand)
-            return frame
+    frame = tk.Frame(master, background = background)
+    frame.pack(side = side, fill = fill, expand = expand)
+    return frame
+
+def insertable_image(master, path, x, y, fill, expand, background): # this imports an image to be used in code
+    imageframe = tk.Frame(master, background = background)
+    img = ImageTk.PhotoImage(Image.open(path).resize((x, y)))
+    image = tk.Label(imageframe, image=img)
+    image.image = img
+    image.pack()
+    imageframe.pack(fill=fill, expand=expand)
+    #test_image = Image.open("Game\Images\test_image.png") hmm this is weird
+    #print(test_image.mode)
+    return imageframe
 
 def Error(): # This definition is used to error catch
     messagebox.showerror(title="Error", message="There has been an error")
@@ -32,6 +53,8 @@ class window: # This class is used to create the window of the programme
         self.bg_colour = "#d9d9d9"
         self.bt_colour = "#d9d9d9"
         self.txt_colour = "#000000"
+        self.important_colour_1 = "#FF0000"
+        self.important_colour_2 = "#00FF00"
         self.window.title("Game by: Benjamin Rivett")
         self.window.geometry("400x300")
         self.score = 0
@@ -40,6 +63,7 @@ class window: # This class is used to create the window of the programme
         self.logged_in = False
         self.score_frame = tk.Frame(self.window, background = self.bg_colour)
         self.score_frame.pack(fill="x")
+
         self.score_label = tk.Label(self.score_frame, text="Score: " + str(self.score), background = self.bg_colour)
         self.score_label.pack(anchor="nw", side = "left")
         self.level_label = tk.Label(self.score_frame, text="Level: " + str(self.level), background = self.bg_colour)
@@ -48,9 +72,16 @@ class window: # This class is used to create the window of the programme
         self.score_button.pack(anchor="nw", side = "left")
         self.level_button = tk.Button(self.score_frame, text="Level +1", command=self.level_add)
         self.level_button.pack(anchor="ne", side = "right")
+        #self.hide_button = tk.Button(self.score_frame, text = "Hide", command=self.hide)
+        #self.hide_button.pack()
         self.main_menu()
         self.dummy_colour_check = tk.Label(self.score_frame, text="", background = self.bg_colour)
         self.dummy_colour_check.pack(anchor="ne", side = "right")
+
+#    def hide(self):
+#        self.score_button.destroy()
+#        self.level_button.destroy()
+#        self.hide_button.destroy()
 
     def level_add(self): # This function is used to add a level
         if int(self.level) < 15:
@@ -62,7 +93,7 @@ class window: # This class is used to create the window of the programme
         self.score = int(self.score)
         self.score += 1
         self.update_score()
-    
+
     def update_score(self): # This definition is used to update the score
         self.score_label.config(text="Score: " + str(self.score), foreground=self.txt_colour, background=self.bg_colour)
         self.score_frame.config(background=self.bg_colour)
@@ -79,9 +110,9 @@ class window: # This class is used to create the window of the programme
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Play", self.level_select)
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Save", self.save_menu)
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Settings", self.settings_menu)
-        button(self.menu_frame, self.bt_colour, self.txt_colour, "Exit", lambda: self.back(None))
+        button(self.menu_frame, self.important_colour_1, self.txt_colour, "Exit", self.back)
 
-    def back(self, level_num): # definition that allows the user to go back a menu
+    def back(self): # definition that allows the user to go back a menu
         if self.state == 0: # Main Menu state
             if messagebox.askyesno("Exit", "Are you sure you want to exit?"):
                 self.window.destroy()
@@ -119,11 +150,11 @@ class window: # This class is used to create the window of the programme
         button(self.save_menu_frame, self.bt_colour, self.txt_colour, "Save", self.save_file_def)
         button(self.save_menu_frame, self.bt_colour, self.txt_colour, "Load", self.load_file_def)
         button(self.save_menu_frame, self.bt_colour, self.txt_colour, "Clear Save", self.reset_file_def)
-        button(self.save_menu_frame, self.bt_colour, self.txt_colour, "Back", lambda: self.back(None))
+        button(self.save_menu_frame, self.important_colour_1, self.txt_colour, "Back", self.back)
 
     def save_file_def(self): # This definition allows for the game to be saved
         with open("Game/save.txt", "w") as self.save_file:
-            self.save_file.writelines("{}\n{}\n{}\n{}\n{}".format(self.score, self.level, self.bg_colour, self.txt_colour, self.bt_colour))
+            self.save_file.writelines(f"{self.score}\n{self.level}\n{self.bg_colour}\n{self.txt_colour}\n{self.bt_colour}")
         messagebox.showinfo("Game saved", "Your game has been successfully saved")
 
     def load_file_def(self): # This definition allows for a save to be loaded
@@ -154,7 +185,7 @@ class window: # This class is used to create the window of the programme
         button(self.settings_frame, self.bt_colour, self.txt_colour, "Background Colour", lambda: self.colour_picker("background"))
         button(self.settings_frame, self.bt_colour, self.txt_colour, "Text Colour", lambda: self.colour_picker("text"))
         button(self.settings_frame, self.bt_colour, self.txt_colour, "Button Colour", lambda: self.colour_picker("button"))
-        button(self.settings_frame, self.bt_colour, self.txt_colour, "Back", lambda: self.back(None))
+        button(self.settings_frame, self.important_colour_1, self.txt_colour, "Back", self.back)
 
     def colour_picker(self, state): # this is a popup window that allows the user to change the colour of a part of the window
         self.colour_window = tk.Tk()
@@ -188,17 +219,17 @@ class window: # This class is used to create the window of the programme
         button(self.colour_frame, self.bt_colour, self.txt_colour, "Custom", self.custom_colour)
 
     def custom_colour(self): # this definition allows the user to set a custom colour
-        self.custom = simpledialog.askstring("Custom Colour", "Enter a hex code for the colour")
+        self.custom = askstring("Custom Colour", "Enter a hex code for the colour")
 
         if self.custom is None:
             messagebox.showerror("Error", "No hex code entered")
 
         elif "#" in self.custom and len(self.custom) == 7:
-            try: 
+            try:
                 self.dummy_colour_check.config(foreground = self.custom)
                 self.colour_setter(self.custom)
 
-            except TclError: 
+            except TclError:
                 messagebox.showerror("Error", "Invalid hex code: " + self.custom)
 
         else:
@@ -224,11 +255,11 @@ class window: # This class is used to create the window of the programme
         self.level_select_frame.pack(fill="both", expand=True)
         self.top_frame = tk.Frame(self.level_select_frame, background=self.bg_colour)
         self.top_frame.pack()
-        self.continue_button = tk.Button(self.top_frame, text="Continue", command= lambda: self.game_start(int(self.level)), background = self.bt_colour, foreground = self.txt_colour)
+        self.continue_button = tk.Button(self.top_frame, text="Continue", command= lambda: self.game_start(self.level), background = self.bt_colour, foreground = self.txt_colour)
         self.continue_button.pack(side="right")
         self.button_zero = tk.Button(self.top_frame, text="Tutorial", command=lambda: self.game_start(0), background = self.bt_colour, foreground = self.txt_colour)
         self.button_zero.pack(side="left")
-        if int(self.level) > 0: # This creates the frames that the buttons will be placed into
+        if int(self.level) > 0:
             self.middle_frame = tk.Frame(self.level_select_frame, background=self.bg_colour)
             self.middle_frame.pack()
             if int(self.level) <= 5:
@@ -246,32 +277,32 @@ class window: # This class is used to create the window of the programme
                 self.lnc1.pack(anchor="nw",side="left", padx=2)
                 self.lnc3.pack(anchor="ne", side="right", padx=2)
                 self.lnc2.pack(anchor="center", padx=2)
-            
-            for x in range(1, (int(self.level) +1)): # This generates the buttons that the user presses to go to a spesific level
+
+            for x in range(1, (int(self.level) +1)):
                 level_num = x
                 self.btn += 1
                 def inner_func(level_num=level_num):
                     self.game_start(int(level_num))
-    
+
                 if self.btn <= 5:
-                    button(self.lnc1, self.bt_colour, self.txt_colour, "Level {}".format(x), inner_func)
+                    button(self.lnc1, self.bt_colour, self.txt_colour, f"Level {x}", inner_func)
                 elif self.btn <= 10:
                     with suppress(AttributeError):
-                        button(self.lnc2, self.bt_colour, self.txt_colour, "Level {}".format(x), inner_func)
+                        button(self.lnc2, self.bt_colour, self.txt_colour, f"Level {x}", inner_func)
                 elif self.btn <= 15:
                     with suppress(AttributeError):
-                        button(self.lnc3, self.bt_colour, self.txt_colour, "Level {}".format(x), inner_func)
-            
-        button(self.level_select_frame, self.bt_colour, self.txt_colour, "Back", lambda: self.back(None))
+                        button(self.lnc3, self.bt_colour, self.txt_colour, f"Level {x}", inner_func)
+
+        button(self.level_select_frame, self.important_colour_1, self.txt_colour, "Back", self.back)
 
     def game_start(self, level_num): # This is what happens when the user pickes a level
         self.state = 5
         self.question_number = 1
         self.level_select_frame.destroy()
-        self.level_select_button = tk.Button(self.score_frame, text="Level Select", command= lambda: self.back(level_num), background = self.bt_colour, foreground = self.txt_colour)
+        self.level_select_button = tk.Button(self.score_frame, text="Level Select", command=self.back, background = self.bt_colour, foreground = self.txt_colour)
         self.level_select_button.pack()
         self.game_learn(level_num)
-        
+
 
     def game_content(self, level_num): # This is where the content of the game will be
         self.game_learn_frame.destroy()
@@ -279,15 +310,15 @@ class window: # This class is used to create the window of the programme
         self.game_content_frame.pack(fill="both", expand=True)
         if level_num == 0 and self.question_number == 1:
             self.randomize_answers(level_num)
-            
+
             label(self.game_content_frame, self.bg_colour, self.txt_colour, "n", """Question 1:
 What was an example of a task A.I could preform
 acording to it's definition?""")
-            button(self.game_content_frame, self.bt_colour, self.txt_colour, "A) {}".format(self.q1), lambda: self.answer_check(self.answer_list[self.q1], level_num))
-            button(self.game_content_frame, self.bt_colour, self.txt_colour, "B) {}".format(self.q2), lambda: self.answer_check(self.answer_list[self.q2], level_num))
-            button(self.game_content_frame, self.bt_colour, self.txt_colour, "C) {}".format(self.q3), lambda: self.answer_check(self.answer_list[self.q3], level_num))
-            button(self.game_content_frame, self.bt_colour, self.txt_colour, "D) {}".format(self.q4), lambda: self.answer_check(self.answer_list[self.q4], level_num))
-            
+            button(self.game_content_frame, self.bt_colour, self.txt_colour, f"A) {self.q1}", lambda: self.answer_check(self.answer_list[self.q1], level_num))
+            button(self.game_content_frame, self.bt_colour, self.txt_colour, f"B) {self.q2}", lambda: self.answer_check(self.answer_list[self.q2], level_num))
+            button(self.game_content_frame, self.bt_colour, self.txt_colour, f"C) {self.q3}", lambda: self.answer_check(self.answer_list[self.q3], level_num))
+            button(self.game_content_frame, self.bt_colour, self.txt_colour, f"D) {self.q4}", lambda: self.answer_check(self.answer_list[self.q4], level_num))
+
         elif level_num == 0 and self.question_number == 2:
             label(self.game_content_frame, self.bg_colour, self.txt_colour, "n", "This is the second question")
             button(self.game_content_frame, self.bt_colour, self.txt_colour, "Correct Answer", lambda: self.answer_check(True, level_num))
@@ -298,9 +329,9 @@ acording to it's definition?""")
 
             label(self.game_content_frame, self.bg_colour, self.txt_colour, "n", """Question 2:
 Is this level 1?""")
-            button(self.game_content_frame, self.bt_colour, self.txt_colour, "A) {}".format(self.q1), lambda: self.answer_check(self.answer_list[self.q1], level_num))
-            button(self.game_content_frame, self.bt_colour, self.txt_colour, "B) {}".format(self.q2), lambda: self.answer_check(self.answer_list[self.q2], level_num))
-        
+            button(self.game_content_frame, self.bt_colour, self.txt_colour, f"A) {self.q1}", lambda: self.answer_check(self.answer_list[self.q1], level_num))
+            button(self.game_content_frame, self.bt_colour, self.txt_colour, f"B) {self.q2}", lambda: self.answer_check(self.answer_list[self.q2], level_num))
+
         else:
             self.level_end(level_num)
 
@@ -318,15 +349,15 @@ Is this level 1?""")
             self.test.append(keys)
             random.shuffle(self.test)
             random.shuffle(self.test)
-            
+
         self.q1 = self.test[0]
         self.q2 = self.test[1]
         with suppress(IndexError):
             self.q3 = self.test[2]
         with suppress(IndexError):
             self.q4 = self.test[3]
-        
-    
+
+
     def answer_check(self, correct, level_num):
         if correct:
             self.score_add()
@@ -342,26 +373,26 @@ Is this level 1?""")
 
     def level_end(self, level_num):
         self.level_select_button.destroy()
-        label(self.game_content_frame, self.bg_colour, self.txt_colour, "n", "Congratulations! You have completed level {}".format(level_num))
+        label(self.game_content_frame, self.bg_colour, self.txt_colour, "n", f"Congratulations! You have completed level {level_num}")
         if self.level == level_num:
             self.level_add()
         button(self.game_content_frame, self.bt_colour, self.txt_colour, "Next Level", lambda: self.next_level(level_num))
-        button(self.game_content_frame, self.bt_colour, self.txt_colour, "Level Select", lambda: self.back(level_num))
+        button(self.game_content_frame, self.bt_colour, self.txt_colour, "Level Select", self.back)
 
     def next_level(self, level_num):
         level_num += 1
         self.game_content_frame.destroy()
         self.game_learn_frame.destroy()
         self.game_start(level_num)
-    
+
     def previous_page_def(self, level_num): # This allows the user to go to the previous page
         self.page_number -= 1
-        self.page_label.config(text="Page: {}".format(self.page_number))
+        self.page_label.config(text=f"Page: {self.page_number}")
         self.page(level_num)
 
     def next_page_def(self, level_num): # This allows the user to go to the next page
         self.page_number += 1
-        self.page_label.config(text="Page: {}".format(self.page_number))
+        self.page_label.config(text=f"Page: {self.page_number}")
         self.page(level_num)
 
     def game_learn(self, level_num): # This allows the user to learn about A.I (Might change the way this works later)
@@ -369,15 +400,15 @@ Is this level 1?""")
         self.page_number = 0
         self.game_learn_frame = tk.Frame(self.window, background=self.bg_colour)
         self.game_learn_frame.pack(fill = "both", expand = True)
-        
+
         self.button_frame = tk.Frame(self.game_learn_frame, background=self.bg_colour)
         self.button_frame.pack(anchor="s", fill="x", side="bottom")
-        self.previous_page = tk.Button(self.button_frame, text="Previous Page", command=lambda: self.previous_page_def(level_num), background = self.bt_colour, foreground = self.txt_colour)
+        self.previous_page = tk.Button(self.button_frame, text="Previous Page", command=lambda: self.previous_page_def(level_num), background = self.important_colour_1, foreground = self.txt_colour)
         self.previous_page.pack(side="left")
-        self.next_page = tk.Button(self.button_frame, text="Next Page", command=lambda: self.next_page_def(level_num), background = self.bt_colour, foreground = self.txt_colour)
+        self.next_page = tk.Button(self.button_frame, text="Next Page", command=lambda: self.next_page_def(level_num), background = self.important_colour_2, foreground = self.txt_colour)
         self.next_page.pack(side="right")
-        
-        self.page_label = tk.Label(self.button_frame, text="Page {}".format(self.page_number), background = self.bg_colour, foreground = self.txt_colour)
+
+        self.page_label = tk.Label(self.button_frame, text=f"Page {self.page_number}", background = self.bg_colour, foreground = self.txt_colour)
         self.page_label.pack()
         self.page(level_num)
 
@@ -387,7 +418,6 @@ Is this level 1?""")
             self.page_range = 5
         elif level_num == 1:
             self.page_range = 2
-            
         if self.page_number <= 0:
             self.previous_page.config(state="disabled")
         elif self.page_number >= self.page_range:
@@ -406,26 +436,25 @@ Is this level 1?""")
         frame_attr = f"content_frame_{self.page_number}"
 
         # Create new content frame
-        new_frame = tk.Frame(self.game_learn_frame, background="red")
+        new_frame = tk.Frame(self.game_learn_frame, background=self.bg_colour)
         new_frame.pack(fill = "both", expand = True)
         setattr(self, frame_attr, new_frame)  # Save reference to the new frame
         # Populate new frame with content based on page_number
-
         if level_num == 0 and self.page_number == 0:
             self.image_to_replace = tk.Label(new_frame, text = "Press this to go back to the level select")
             self.image_to_replace.pack(anchor = "n")
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
-            label(format_frame, self.bg_colour, self.txt_colour, "n", """This program is going to teach you about A.I then
+            label(format_frame, self.bg_colour, self.txt_colour, "sw",
+"""This program is going to teach you about A.I then
 it will quiz you on the information that you learnt.
 This is the tutorial level, it will teach you how the program works.""")
-            button(new_frame, self.bt_colour, self.txt_colour, "Remove frame", lambda: self.remove_frame(format_frame))
         elif level_num == 0 and self.page_number == 1:
             label(new_frame, self.bg_colour, self.txt_colour, "center", """Levels are split into two parts.
 The first part will teach you about an area of A.I then
 the second part will quiz you on the information that you learnt""")
         elif level_num == 0 and self.page_number == 2:
             label(new_frame, self.bg_colour, self.txt_colour, "center", """This tuorial will teach you the definition of A.I.
-The definiion of A.I according to Google is:
+The definiion of A.I acording to Google is:
 'The theory and development of computer systems
 able to perform tasks normally requiring human intelligence,
 such as visual perception, speech recognition,
@@ -440,7 +469,7 @@ B) Creaing a digital picture
 C) Speaking to a human
 D) Playing a game""")
         elif level_num == 0 and self.page_number == 4:
-            label(new_frame, self.bg_colour, self.txt_colour, "center", """The correct answer would be 
+            label(new_frame, self.bg_colour, self.txt_colour, "center", """The correct answer would be
 A) Translation between languages
 This is becasue it was the only one of the four that was
 present in the provided definiion.""")
@@ -454,8 +483,7 @@ the quiz secion of the level.""")
             button(new_frame, self.bt_colour, self.txt_colour, "Start Quiz", lambda: self.game_content(level_num))
 
         # Update page label
-        self.page_label.config(text="Page {}".format(self.page_number))
-    def remove_frame(self, thing):
-        thing.destroy()
+        self.page_label.config(text=f"Page {self.page_number}")
+
 main = window() # This calls the window class
 main.window.mainloop() # This runs the window
