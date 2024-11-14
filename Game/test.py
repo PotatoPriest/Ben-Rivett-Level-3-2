@@ -1,8 +1,8 @@
 # Name - Benjamin Rivett
-# Date - 10/6/2024
-# Version - 0.5
-# This version allows the user to choose a level.
-# State guide : 0 = Main Menu, 1 = Game, 2 = Settings, 3 = Save, 4 = Level Select, 5 = Game Learn
+# Date - 15/11/2024
+# Version - 1
+# This is the complete version of the game
+# State guide : 0 = Main Menu, 1 = Game, 2 = Settings, 3 = Save, 4 = Level Select, 5 = Game Learn, 6 = Game quiz state
 
 # Importing required things
 import random
@@ -72,20 +72,11 @@ class window: # This class is used to create the window of the programme
         self.score_label.pack(anchor="nw", side = "left")
         self.level_label = tk.Label(self.score_frame, text="Level: " + str(self.level), background = self.bg_colour)
         self.level_label.pack(anchor="ne", side = "right")
-        self.level_button = tk.Button(self.score_frame, text="Level +1", command=self.level_add)
-        self.level_button.pack(anchor="ne", side = "right")
-        #self.hide_button = tk.Button(self.score_frame, text = "Hide", command=self.hide)
-        #self.hide_button.pack()
         self.main_menu()
         self.dummy_colour_check = tk.Label(self.score_frame, text="", background = self.bg_colour)
         self.dummy_colour_check.pack(anchor="ne", side = "right")
 
-#    def hide(self):
-#        self.score_button.destroy()
-#        self.level_button.destroy()
-#        self.hide_button.destroy()
-
-    def main_menu_button(self):
+    def main_menu_button(self): # This is a button that will take the player back to the main menu no matter where they are inthe game
         if self.state != 0:
             self.bt_there = 1
             self.menu_button = tk.Button(self.score_frame, bg="gold", fg=self.txt_colour, text="Main Menu", command=lambda: self.back(True))
@@ -221,7 +212,7 @@ class window: # This class is used to create the window of the programme
         button(self.settings_frame, self.bg_colour, self.txt_colour, "Button Colours", self.button_colour_def)
         button(self.settings_frame, self.important_colour_1, self.txt_colour, "Back", lambda: self.back(False))
 
-    def button_colour_def(self):
+    def button_colour_def(self): # This menu is for all of the custom button colours
         self.settings_frame.destroy()
         self.state = 6
         self.button_colour_frame = tk.Frame(self.window, bg=self.bg_colour)
@@ -338,7 +329,7 @@ class window: # This class is used to create the window of the programme
                 self.lnc3.pack(anchor="ne", side="right", padx=2)
                 self.lnc2.pack(anchor="center", padx=2)
 
-            for x in range(1, (int(self.level) +1)):
+            for x in range(1, (int(self.level) +1)): # This makes the level select buttons
                 level_num = x
                 self.btn += 1
                 def inner_func(level_num=level_num):
@@ -459,13 +450,10 @@ poses that was NOT provided?""")
             button(self.game_content_frame, self.qbt_colour_3, self.txt_colour, f"C) {self.q3}", lambda: self.answer_check(self.answer_list[self.q3], level_num))
             button(self.game_content_frame, self.qbt_colour_4, self.txt_colour, f"D) {self.q4}", lambda: self.answer_check(self.answer_list[self.q4], level_num))
 
-
-
-
         else:
             self.level_end(level_num)
 
-    def randomize_answers(self, level_num):
+    def randomize_answers(self, level_num): # This randomizes the answeres
         if level_num == 0:
             if self.question_number == 1:
                 self.answer_list = {"Translation between languages" : True, "Creating a digital picture" : False, "Speaking to a human" : False, "Playing a Game" : False}
@@ -493,7 +481,7 @@ poses that was NOT provided?""")
 
         self.shuffle_dict()
 
-    def shuffle_dict(self):
+    def shuffle_dict(self): # This is what shuffles the answers
         self.test = []
         for keys in self.answer_list:
             self.test.append(keys)
@@ -508,7 +496,7 @@ poses that was NOT provided?""")
             self.q4 = self.test[3]
 
 
-    def answer_check(self, correct, level_num):
+    def answer_check(self, correct, level_num): # This checks if the player got the answer correct or not
         if correct:
             self.score_add()
             self.question_number += 1
@@ -521,7 +509,7 @@ poses that was NOT provided?""")
             self.game_content_frame.destroy()
             self.game_content(level_num)
 
-    def level_end(self, level_num):
+    def level_end(self, level_num): # This is for when the player finishes the level
         self.level_select_button.destroy()
         if level_num > 0 :
             label(self.game_content_frame, self.bg_colour, self.txt_colour, "n", f"Congratulations! You have completed level {level_num}")
@@ -533,7 +521,7 @@ poses that was NOT provided?""")
         button(self.game_content_frame, self.important_colour_2, self.txt_colour, "Next Level", lambda: self.next_level(level_num))
         button(self.game_content_frame, self.bt_colour, self.txt_colour, "Level Select", lambda: self.back(False))
 
-    def next_level(self, level_num):
+    def next_level(self, level_num): # This takes the player to the next level
         level_num += 1
         self.game_content_frame.destroy()
         self.game_learn_frame.destroy()
@@ -598,7 +586,7 @@ poses that was NOT provided?""")
         new_frame.pack(fill = "both", expand = True)
         setattr(self, frame_attr, new_frame)  # Save reference to the new frame
         # Populate new frame with content based on page_number
-        if level_num == 0 and self.page_number == 0:
+        if level_num == 0 and self.page_number == 0: # Tutorial
             label(new_frame, self.bg_colour, self.txt_colour, "n", """  ^
 Press this button to go back to the level select""")
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
@@ -642,7 +630,7 @@ Click the buttton bellow to move onto
 the quiz secion of the level.""")
             button(format_frame, self.important_colour_2, self.txt_colour, "Start Quiz", lambda: self.game_content(level_num))
 
-        elif level_num == 1 and self.page_number == 0:
+        elif level_num == 1 and self.page_number == 0: # Level 1
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
             label(format_frame, self.bg_colour, self.txt_colour, "sw", """The first thing you need to know about A.I is that there
 are a couple diferent types of A.I, the first being Narrow or Weak A.I
@@ -665,7 +653,7 @@ such as Chatgpt which could be considered more advaced than weak
 A.I but not quit a strong A.I.""")
             button(format_frame, self.important_colour_2, self.txt_colour, "Start Quiz", lambda: self.game_content(level_num))
 
-        elif level_num == 2 and self.page_number == 0:
+        elif level_num == 2 and self.page_number == 0: # Level 2
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
             label(format_frame, self.bg_colour, self.txt_colour, "sw", """A.I is currently being used in many diferent ways
 currently the most famouse A.I is probobly ChatGPT.
@@ -694,7 +682,7 @@ automated machinery like driverless cars and robots. A.I is used
 in pretty much everything on the internet even if you don't realize it.""")
             button(format_frame, self.important_colour_2, self.txt_colour, "Start Quiz", lambda: self.game_content(level_num))
 
-        elif level_num == 3 and self.page_number == 0:
+        elif level_num == 3 and self.page_number == 0: # Level 3
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
             label(format_frame, self.bg_colour, self.txt_colour, "sw", """Now that you have learnt about the benefits of A.I
 its time to learn about how dangerous A.I can be.
@@ -721,7 +709,7 @@ Probobly the worst danger of using A.I are the deepfakes
 and misinformation that A.I can spread.""")
             button(format_frame, self.important_colour_2, self.txt_colour, "Start Quiz", lambda: self.game_content(level_num))
 
-        elif level_num == 4 and self.page_number == 0:
+        elif level_num == 4 and self.page_number == 0: # Final Level
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
             label(format_frame, self.bg_colour, self.txt_colour, "sw", """Well Done! You have made it to the final level.
 This level will go over evrything you have learnt""")
