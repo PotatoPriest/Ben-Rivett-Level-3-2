@@ -27,6 +27,7 @@ def button_img(master, text, background, text_colour, command, path, side, x, y)
     bt = tk.Button(master, text=text, command=command, background=background, foreground=text_colour, image=img, compound=side)
     bt.image = img
     bt.pack(pady=2)
+    return bt
 
 def reusable_frame(master, side, fill, expand, background): # This definition is used to create a frame
     frame = tk.Frame(master, background = background)
@@ -112,10 +113,10 @@ class window: # This class is used to create the window of the programme
         self.menu_frame.pack(fill="both", expand=True)
         label(self.menu_frame, self.bg_colour, self.txt_colour, "n", "Main Menu")
         button(self.menu_frame, self.important_colour_2, self.txt_colour, "Play", self.level_select)
-        button(self.menu_frame, self.bt_colour, self.txt_colour, "Save", self.save_menu)
+        button_img(self.menu_frame, "Save", self.bt_colour, self.txt_colour, self.save_menu, "Game\Images\Save_Game.png", "right", 20, 20)
         button(self.menu_frame, self.important_colour_2, self.txt_colour, "Tutorial", lambda: self.game_start(0))
-        button(self.menu_frame, self.bt_colour, self.txt_colour, "Settings", self.settings_menu)
-        button(self.menu_frame, self.important_colour_1, self.txt_colour, "Exit", lambda: self.back(None))
+        button_img(self.menu_frame, "Settings", self.bt_colour, self.txt_colour, self.settings_menu, "Game\Images\Cog.png", "right", 20, 20)
+        button_img(self.menu_frame, "Exit", self.important_colour_1, self.txt_colour, lambda: self.back(None), "Game\Images\Exit.png", "right", 20, 20)
 
     def back(self, mbtp): # definition that allows the user to go back a menu
         if self.state == 0: # Main Menu state
@@ -164,10 +165,10 @@ class window: # This class is used to create the window of the programme
         self.save_menu_frame = tk.Frame(self.window, background=self.bg_colour)
         self.save_menu_frame.pack(fill = "both", expand = True)
         label(self.save_menu_frame, self.bg_colour, self.txt_colour, "n", "Save Menu")
-        button(self.save_menu_frame, self.bt_colour, self.txt_colour, "Save", self.save_file_def)
-        button(self.save_menu_frame, self.bt_colour, self.txt_colour, "Load", self.load_file_def)
-        button(self.save_menu_frame, self.bt_colour, self.txt_colour, "Clear Save", self.reset_file_def)
-        button(self.save_menu_frame, self.important_colour_1, self.txt_colour, "Back", lambda: self.back(False))
+        button_img(self.save_menu_frame, "Save", self.bt_colour, self.txt_colour, self.save_file_def, "Game\Images\Save_Game.png", "right", 20, 20)
+        button_img(self.save_menu_frame, "Load", self.bt_colour, self.txt_colour, self.load_file_def, "Game\Images\Load_Save.png", "right", 20, 20)
+        button_img(self.save_menu_frame, "Clear Save", self.bt_colour, self.txt_colour, self.reset_file_def, "Game\Images\Reset_Save.png", "right", 20, 20)
+        button_img(self.save_menu_frame, "Back", self.important_colour_1, self.txt_colour, lambda: self.back(False), "Game\Images\Left_Arrow.png", "left", 30, 20)
 
     def save_file_def(self): # This definition allows for the game to be saved
         with open("Game/save.txt", "w") as self.save_file:
@@ -211,7 +212,7 @@ class window: # This class is used to create the window of the programme
         button(self.settings_frame, self.bt_colour, self.txt_colour, "Text Colour", lambda: self.colour_picker("text"))
         button(self.settings_frame, self.bt_colour, self.txt_colour, "Button Colours", self.button_colour_def)
         button(self.settings_frame, self.bt_colour, self.txt_colour, "Reset Colours", self.reset_colours)
-        button(self.settings_frame, self.important_colour_1, self.txt_colour, "Back", lambda: self.back(False))
+        button_img(self.settings_frame, "Back", self.important_colour_1, self.txt_colour, lambda: self.back(False), "Game\Images\Left_Arrow.png", "left", 30, 20)
 
     def reset_colours(self):
         self.bg_colour = "#d9d9d9"
@@ -240,7 +241,7 @@ class window: # This class is used to create the window of the programme
         button(self.button_colour_frame, self.bt_colour, self.txt_colour, "Quiz Button Two", lambda: self.colour_picker("qbt2"))
         button(self.button_colour_frame, self.bt_colour, self.txt_colour, "Quiz Button Three", lambda: self.colour_picker("qbt3"))
         button(self.button_colour_frame, self.bt_colour, self.txt_colour, "Quiz Button Four", lambda: self.colour_picker("qbt4"))
-        button(self.button_colour_frame, self.important_colour_1, self.txt_colour, "Back", lambda: self.back(False))
+        button_img(self.button_colour_frame, "Back", self.important_colour_1, self.txt_colour, lambda: self.back(False), "Game\Images\Left_Arrow.png", "left", 30, 20)
 
     def colour_picker(self, state): # this is a popup window that allows the user to change the colour of a part of the window
         self.colour_window = tk.Tk()
@@ -321,8 +322,8 @@ class window: # This class is used to create the window of the programme
         self.level_select_frame.pack(fill="both", expand=True)
         self.top_frame = tk.Frame(self.level_select_frame, background=self.bg_colour)
         self.top_frame.pack()
-        self.continue_button = tk.Button(self.top_frame, text="Continue", command= lambda: self.game_start(self.level), background = self.important_colour_2, foreground = self.txt_colour)
-        self.continue_button.pack(side="right")
+        continue_button =button_img(self.top_frame, "Continue", self.important_colour_2, self.txt_colour, lambda: self.game_start(self.level), "Game\Images\Right_Arrow.png", "right", 30, 20)
+        continue_button.pack(side="right")
         self.button_zero = tk.Button(self.top_frame, text="Tutorial", command=lambda: self.game_start(0), background = self.bt_colour, foreground = self.txt_colour)
         self.button_zero.pack(side="left")
         if int(self.level) > 0:
@@ -362,7 +363,8 @@ class window: # This class is used to create the window of the programme
 
                     button(self.lnc1, self.bt_colour, self.txt_colour, "Final Level", inner_func)
 
-        button(self.level_select_frame, self.important_colour_1, self.txt_colour, "Back", lambda: self.back(False))
+        button_img(self.level_select_frame, "Back", self.important_colour_1, self.txt_colour, lambda: self.back(False), "Game\Images\Left_Arrow.png", "left", 30, 20)
+        
 
     def game_start(self, level_num): # This is what happens when the user pickes a level
         self.state = 5
@@ -533,7 +535,7 @@ poses that was NOT provided?""")
         if self.level == level_num:
             self.level_add()
         label(self.game_content_frame, self.bg_colour, self.txt_colour, "n", f"Your current score is: {self.score}")
-        button(self.game_content_frame, self.important_colour_2, self.txt_colour, "Next Level", lambda: self.next_level(level_num))
+        button_img(self.game_content_frame, "Next Level", self.important_colour_2, self.txt_colour, lambda: self.next_level(level_num), "Game\Images\Right_Arrow.png", "right", 30, 20)
         button(self.game_content_frame, self.bt_colour, self.txt_colour, "Level Select", lambda: self.back(False))
 
     def next_level(self, level_num): # This takes the player to the next level
@@ -560,11 +562,10 @@ poses that was NOT provided?""")
 
         self.button_frame = tk.Frame(self.game_learn_frame, background=self.bg_colour)
         self.button_frame.pack(anchor="s", fill="x", side="bottom")
-        self.previous_page = tk.Button(self.button_frame, text="Previous Page", command=lambda: self.previous_page_def(level_num), background = self.important_colour_1, foreground = self.txt_colour)
+        self.previous_page = button_img(self.button_frame, "Previous page", self.important_colour_1, self.txt_colour, lambda: self.previous_page_def(level_num), "Game\Images\Left_Arrow.png", "left", 30, 20)
         self.previous_page.pack(side="left")
-        self.next_page = tk.Button(self.button_frame, text="Next Page", command=lambda: self.next_page_def(level_num), background = self.important_colour_2, foreground = self.txt_colour)
+        self.next_page = button_img(self.button_frame, "Next page", self.important_colour_2, self.txt_colour, lambda: self.next_page_def(level_num), "Game\Images\Right_Arrow.png", "right", 30, 20)
         self.next_page.pack(side="right")
-
         self.page_label = tk.Label(self.button_frame, text=f"Page {self.page_number}", background = self.bg_colour, foreground = self.txt_colour)
         self.page_label.pack()
         self.page(level_num)
