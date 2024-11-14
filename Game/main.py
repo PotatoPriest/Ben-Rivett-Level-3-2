@@ -209,8 +209,23 @@ class window: # This class is used to create the window of the programme
         label(self.settings_frame, self.bg_colour, self.txt_colour, "n", "Accessibility Options:")
         button(self.settings_frame, self.bt_colour, self.txt_colour, "Background Colour", lambda: self.colour_picker("background"))
         button(self.settings_frame, self.bt_colour, self.txt_colour, "Text Colour", lambda: self.colour_picker("text"))
-        button(self.settings_frame, self.bg_colour, self.txt_colour, "Button Colours", self.button_colour_def)
+        button(self.settings_frame, self.bt_colour, self.txt_colour, "Button Colours", self.button_colour_def)
+        button(self.settings_frame, self.bt_colour, self.txt_colour, "Reset Colours", self.reset_colours)
         button(self.settings_frame, self.important_colour_1, self.txt_colour, "Back", lambda: self.back(False))
+
+    def reset_colours(self):
+        self.bg_colour = "#d9d9d9"
+        self.bt_colour = "#d9d9d9"
+        self.txt_colour = "#000000"
+        self.important_colour_1 = "#FF0000"
+        self.important_colour_2 = "#00FF00"
+        self.qbt_colour_1 = "#FF0000"
+        self.qbt_colour_2 = "#00FF00"
+        self.qbt_colour_3 = "#00FFFF"
+        self.qbt_colour_4 = "#FFFF00"
+        self.settings_frame.destroy()
+        self.settings_menu()
+        self.update_score()
 
     def button_colour_def(self): # This menu is for all of the custom button colours
         self.settings_frame.destroy()
