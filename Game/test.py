@@ -95,7 +95,7 @@ class window: # This class is used to create the window of the programme
             self.menu_button.destroy()
 
     def level_add(self): # This function is used to add a level
-        if int(self.level) < 5:
+        if int(self.level) < 4:
             self.level = int(self.level)
             self.level += 1
         self.update_level()
@@ -180,7 +180,7 @@ class window: # This class is used to create the window of the programme
 
     def save_file_def(self): # This definition allows for the game to be saved
         with open("Game/save.txt", "w") as self.save_file:
-            self.save_file.writelines(f"{self.score}\n{self.level}\n{self.bg_colour}\n{self.txt_colour}\n{self.bt_colour}\n{self.important_colour_1}\n{self.important_colour_2}")
+            self.save_file.writelines(f"{self.score}\n{self.level}\n{self.bg_colour}\n{self.txt_colour}\n{self.bt_colour}\n{self.important_colour_1}\n{self.important_colour_2}\n{self.qbt_colour_1}\n{self.qbt_colour_2}\n{self.qbt_colour_3}\n{self.qbt_colour_4}")
         messagebox.showinfo("Game saved", "Your game has been successfully saved")
 
     def load_file_def(self): # This definition allows for a save to be loaded
@@ -192,6 +192,10 @@ class window: # This class is used to create the window of the programme
             self.bt_colour = self.save_file.readline().strip()
             self.important_colour_1 = self.save_file.readline().strip()
             self.important_colour_2 = self.save_file.readline().strip()
+            self.qbt_colour_1 = self.save_file.readline().strip()
+            self.qbt_colour_2 = self.save_file.readline().strip()
+            self.qbt_colour_3 = self.save_file.readline().strip()
+            self.qbt_colour_4 = self.save_file.readline().strip()
         self.update_score()
         self.update_level()
         self.save_menu_frame.destroy()
@@ -200,7 +204,7 @@ class window: # This class is used to create the window of the programme
 
     def reset_file_def(self): # Definition for reseting the save file
         with open("Game/save.txt", "w") as self.save_file:
-            self.save_file.writelines("0\n0\n#d9d9d9\n#000000\n#d9d9d9\n#FF0000\n#00FF00")
+            self.save_file.writelines("0\n0\n#d9d9d9\n#000000\n#d9d9d9\n#FF0000\n#00FF00\n#FF0000\n#00FF00\n#00FFFF\n#FFFF00")
         messagebox.showinfo("Save Reset", "Your save has been successfully reset")
 
     def settings_menu(self): # this is the settings menu
@@ -339,7 +343,7 @@ class window: # This class is used to create the window of the programme
                 self.btn += 1
                 def inner_func(level_num=level_num):
                     self.game_start(int(level_num))
-                if self.btn != 5:
+                if self.btn != 4:
                     if self.btn <= 5:
                         button(self.lnc1, self.bt_colour, self.txt_colour, f"Level {x}", inner_func)
                     elif self.btn <= 10:
@@ -349,6 +353,7 @@ class window: # This class is used to create the window of the programme
                         with suppress(AttributeError):
                             button(self.lnc3, self.bt_colour, self.txt_colour, f"Level {x}", inner_func)
                 else:
+
                     button(self.lnc1, self.bt_colour, self.txt_colour, "Final Level", inner_func)
 
         button(self.level_select_frame, self.important_colour_1, self.txt_colour, "Back", lambda: self.back(False))
@@ -569,6 +574,8 @@ poses that was NOT provided?""")
             self.page_range = 3
         elif level_num == 3:
             self.page_range = 2
+        elif level_num == 4:
+            self.page_range = 4
         if self.page_number <= 0:
             self.previous_page.config(state="disabled")
         elif self.page_number >= self.page_range:
@@ -717,13 +724,30 @@ and misinformation that A.I can spread.""")
         elif level_num == 4 and self.page_number == 0:
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
             label(format_frame, self.bg_colour, self.txt_colour, "sw", """Well Done! You have made it to the final level.
-This level will go over evrything you have learnt
-and it will add a little bit of extra information.""")
+This level will go over evrything you have learnt""")
         elif level_num == 4 and self.page_number == 1:
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
-            label(format_frame, self.bg_colour, self.txt_colour, "sw", """
-""")
-
+            label(format_frame, self.bg_colour, self.txt_colour, "sw", """First you learnt about what the diferences between weak
+and strong A.I. These diferences being waek A.I if only
+able to complete taks it was trained to complete and
+strong A.I being able to learn new things and complete tasks
+it has nnever been taught to do based off of past knoledge.""")
+        elif level_num == 4 and self.page_number == 2:
+            format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
+            label(format_frame, self.bg_colour, self.txt_colour, "sw", """Next you learnt about the usefulnesses of A.I
+these usefulnesses being how it can be used to aid in completing work
+and make it easier to complete tasks such as research.""")
+        elif level_num == 4 and self.page_number == 3:
+            format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
+            label(format_frame, self.bg_colour, self.txt_colour, "sw", """Finally you learnt about the dangers of using A.I
+like how you can become dependant on A.I, how A.I can provide
+biased or just wrong information, and how deepfakes and
+missinformation can become easier to fall victim to becasue of A.I.""")
+        elif level_num == 4 and self.page_number == 4:
+            format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
+            label(format_frame, self.bg_colour, self.txt_colour, "sw", """Thank you so much for playing my game!""")
+            button(format_frame, self.important_colour_2, self.txt_colour, "Save Game", self.save_file_def)
+            button(format_frame, self.important_colour_1, self.txt_colour, "Finish Game", lambda: self.back(True))
 
         # Update page label
         self.page_label.config(text=f"Page {self.page_number}")
