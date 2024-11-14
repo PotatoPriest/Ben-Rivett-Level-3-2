@@ -587,7 +587,7 @@ poses that was NOT provided?""")
         setattr(self, frame_attr, new_frame)  # Save reference to the new frame
         # Populate new frame with content based on page_number
         if level_num == 0 and self.page_number == 0: # Tutorial
-            label(new_frame, self.bg_colour, self.txt_colour, "n", """  ^
+            label(new_frame, self.bg_colour, self.txt_colour, "n", """                       ^
 Press this button to go back to the level select""")
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
             label(format_frame, self.bg_colour, self.txt_colour, "sw",
