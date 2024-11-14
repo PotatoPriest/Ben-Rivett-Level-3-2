@@ -57,8 +57,12 @@ class window: # This class is used to create the window of the programme
         self.txt_colour = "#000000"
         self.important_colour_1 = "#FF0000"
         self.important_colour_2 = "#00FF00"
+        self.qbt_colour_1 = "#FF0000"
+        self.qbt_colour_2 = "#00FF00"
+        self.qbt_colour_3 = "#00FFFF"
+        self.qbt_colour_4 = "#FFFF00"
         self.window.title("Game by: Benjamin Rivett")
-        self.window.geometry("400x300")
+        self.window.geometry("400x325")
         self.score = 0
         self.level = 0
         self.page_number = 0
@@ -68,8 +72,6 @@ class window: # This class is used to create the window of the programme
         self.score_label.pack(anchor="nw", side = "left")
         self.level_label = tk.Label(self.score_frame, text="Level: " + str(self.level), background = self.bg_colour)
         self.level_label.pack(anchor="ne", side = "right")
-        self.score_button = tk.Button(self.score_frame, text="Score +1", command=self.score_add)
-        self.score_button.pack(anchor="nw", side = "left")
         self.level_button = tk.Button(self.score_frame, text="Level +1", command=self.level_add)
         self.level_button.pack(anchor="ne", side = "right")
         #self.hide_button = tk.Button(self.score_frame, text = "Hide", command=self.hide)
@@ -120,6 +122,7 @@ class window: # This class is used to create the window of the programme
         label(self.menu_frame, self.bg_colour, self.txt_colour, "n", "Main Menu")
         button(self.menu_frame, self.important_colour_2, self.txt_colour, "Play", self.level_select)
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Save", self.save_menu)
+        button(self.menu_frame, self.important_colour_2, self.txt_colour, "Tutorial", lambda: self.game_start(0))
         button(self.menu_frame, self.bt_colour, self.txt_colour, "Settings", self.settings_menu)
         button(self.menu_frame, self.important_colour_1, self.txt_colour, "Exit", lambda: self.back(None))
 
@@ -155,6 +158,12 @@ class window: # This class is used to create the window of the programme
             else:
                 self.main_menu()
 
+        elif self.state == 6: # Setting the colour of the buttons state
+            self.button_colour_frame.destroy()
+            if not mbtp:
+                self.settings_menu()
+            else:
+                self.main_menu()
 
     def save_menu(self): # definition that creates the save menu
         self.state = 2
@@ -205,10 +214,23 @@ class window: # This class is used to create the window of the programme
         label(self.settings_frame, self.bg_colour, self.txt_colour, "n", "Accessibility Options:")
         button(self.settings_frame, self.bt_colour, self.txt_colour, "Background Colour", lambda: self.colour_picker("background"))
         button(self.settings_frame, self.bt_colour, self.txt_colour, "Text Colour", lambda: self.colour_picker("text"))
-        button(self.settings_frame, self.bt_colour, self.txt_colour, "Button Colour", lambda: self.colour_picker("button"))
-        button(self.settings_frame, self.bt_colour, self.txt_colour, "Continue Button Colour", lambda: self.colour_picker("important_2"))
-        button(self.settings_frame, self.bt_colour, self.txt_colour, "Back Button Colour", lambda: self.colour_picker("important_1"))
+        button(self.settings_frame, self.bg_colour, self.txt_colour, "Button Colours", self.button_colour_def)
         button(self.settings_frame, self.important_colour_1, self.txt_colour, "Back", lambda: self.back(False))
+
+    def button_colour_def(self):
+        self.settings_frame.destroy()
+        self.state = 6
+        self.button_colour_frame = tk.Frame(self.window, bg=self.bg_colour)
+        self.button_colour_frame.pack(fill="both", expand=True)
+        label(self.button_colour_frame, self.bg_colour, self.txt_colour, "n", "Here You can pick the colours of the various types of buttons")
+        button(self.button_colour_frame, self.bt_colour, self.txt_colour, "General Button Colour", lambda: self.colour_picker("button"))
+        button(self.button_colour_frame, self.bt_colour, self.txt_colour, "Continue Button Colour", lambda: self.colour_picker("important_2"))
+        button(self.button_colour_frame, self.bt_colour, self.txt_colour, "Back Button Colour", lambda: self.colour_picker("important_1"))
+        button(self.button_colour_frame, self.bt_colour, self.txt_colour, "Quiz Button One", lambda: self.colour_picker("qbt1"))
+        button(self.button_colour_frame, self.bt_colour, self.txt_colour, "Quiz Button Two", lambda: self.colour_picker("qbt2"))
+        button(self.button_colour_frame, self.bt_colour, self.txt_colour, "Quiz Button Three", lambda: self.colour_picker("qbt3"))
+        button(self.button_colour_frame, self.bt_colour, self.txt_colour, "Quiz Button Four", lambda: self.colour_picker("qbt4"))
+        button(self.button_colour_frame, self.important_colour_1, self.txt_colour, "Back", lambda: self.back(False))
 
     def colour_picker(self, state): # this is a popup window that allows the user to change the colour of a part of the window
         self.colour_window = tk.Tk()
@@ -236,9 +258,11 @@ class window: # This class is used to create the window of the programme
         button(self.colour_frame_left, self.bt_colour, self.txt_colour, "Light Gray", lambda: self.colour_setter("#d9d9d9"))
         button(self.colour_frame_left, self.bt_colour, self.txt_colour, "Black", lambda: self.colour_setter("#000000"))
         button(self.colour_frame_left, self.bt_colour, self.txt_colour, "White", lambda: self.colour_setter("#ffffff"))
+        button(self.colour_frame_left, self.bt_colour, self.txt_colour, "Light Blue", lambda: self.colour_setter("#00FFFF"))
         button(self.colour_frame_right, self.bt_colour, self.txt_colour, "Red", lambda: self.colour_setter("#ff0000"))
         button(self.colour_frame_right, self.bt_colour, self.txt_colour, "Green", lambda: self.colour_setter("#00ff00"))
         button(self.colour_frame_right, self.bt_colour, self.txt_colour, "Blue", lambda: self.colour_setter("#0000ff"))
+        button(self.colour_frame_right, self.bt_colour, self.txt_colour, "Yellow", lambda: self.colour_setter("#FFFF00"))
         button(self.colour_frame, self.bt_colour, self.txt_colour, "Custom", self.custom_colour)
 
     def custom_colour(self): # this definition allows the user to set a custom colour
@@ -270,6 +294,8 @@ class window: # This class is used to create the window of the programme
         elif self.colour_state == "important_2":
             self.important_colour_2 = colour
 
+        with suppress(AttributeError):
+            self.button_colour_frame.destroy()
         self.update_score()
         self.settings_frame.destroy()
         self.settings_menu()
@@ -328,7 +354,11 @@ class window: # This class is used to create the window of the programme
     def game_start(self, level_num): # This is what happens when the user pickes a level
         self.state = 5
         self.question_number = 1
-        self.level_select_frame.destroy()
+        with suppress(AttributeError):
+            self.level_select_frame.destroy()
+        if self.bt_there == 0:
+            self.menu_frame.destroy()
+            self.main_menu_button()
         self.level_select_button = tk.Button(self.score_frame, text="Level Select", command=lambda: self.back(False), background = self.bt_colour, foreground = self.txt_colour)
         self.level_select_button.pack()
         self.game_learn(level_num)
@@ -344,15 +374,20 @@ class window: # This class is used to create the window of the programme
             label(self.game_content_frame, self.bg_colour, self.txt_colour, "n", """Question 1:
 What was an example of a task A.I could preform
 acording to it's definition?""")
-            button(self.game_content_frame, self.bt_colour, self.txt_colour, f"A) {self.q1}", lambda: self.answer_check(self.answer_list[self.q1], level_num))
-            button(self.game_content_frame, self.bt_colour, self.txt_colour, f"B) {self.q2}", lambda: self.answer_check(self.answer_list[self.q2], level_num))
-            button(self.game_content_frame, self.bt_colour, self.txt_colour, f"C) {self.q3}", lambda: self.answer_check(self.answer_list[self.q3], level_num))
-            button(self.game_content_frame, self.bt_colour, self.txt_colour, f"D) {self.q4}", lambda: self.answer_check(self.answer_list[self.q4], level_num))
+            button(self.game_content_frame, self.qbt_colour_1, self.txt_colour, f"A) {self.q1}", lambda: self.answer_check(self.answer_list[self.q1], level_num))
+            button(self.game_content_frame, self.qbt_colour_2, self.txt_colour, f"B) {self.q2}", lambda: self.answer_check(self.answer_list[self.q2], level_num))
+            button(self.game_content_frame, self.qbt_colour_3, self.txt_colour, f"C) {self.q3}", lambda: self.answer_check(self.answer_list[self.q3], level_num))
+            button(self.game_content_frame, self.qbt_colour_4, self.txt_colour, f"D) {self.q4}", lambda: self.answer_check(self.answer_list[self.q4], level_num))
 
         elif level_num == 0 and self.question_number == 2:
-            label(self.game_content_frame, self.bg_colour, self.txt_colour, "n", "This is the second question")
-            button(self.game_content_frame, self.bt_colour, self.txt_colour, "Correct Answer", lambda: self.answer_check(True, level_num))
-            button(self.game_content_frame, self.bt_colour, self.txt_colour, "Incorrect Answer", lambda: self.answer_check(False, level_num))
+            self.randomize_answers(level_num)
+            label(self.game_content_frame, self.bg_colour, self.txt_colour, "n", """Question 2:
+The levels in this game are split into two parts,
+the first part teaches you something about A.I
+and the second part gives you a quiz about waht you learnt
+True or False""")
+            button(self.game_content_frame, self.bt_colour, self.txt_colour, f"{self.q1}", lambda: self.answer_check(self.answer_list[self.q1], level_num))
+            button(self.game_content_frame, self.bt_colour, self.txt_colour, f"{self.q2}", lambda: self.answer_check(self.answer_list[self.q2], level_num))
 
         elif level_num == 1 and self.question_number == 1:
             self.randomize_answers(level_num)
@@ -367,8 +402,12 @@ Is this level 1?""")
 
     def randomize_answers(self, level_num):
         if level_num == 0:
-            self.answer_list = {"Translation between languages" : True, "Creating a digital picture" : False, "Speaking to a human" : False, "Playing a Game" : False}
-            self.shuffle_dict()
+            if self.question_number == 1:
+                self.answer_list = {"Translation between languages" : True, "Creating a digital picture" : False, "Speaking to a human" : False, "Playing a Game" : False}
+                self.shuffle_dict()
+            if self.question_number == 2:
+                self.answer_list = {"True" : True, "False" : False}
+                self.shuffle_dict()
         elif level_num == 1:
             self.answer_list = {"Yes" : True, "No" : False}
             self.shuffle_dict()
@@ -403,7 +442,10 @@ Is this level 1?""")
 
     def level_end(self, level_num):
         self.level_select_button.destroy()
-        label(self.game_content_frame, self.bg_colour, self.txt_colour, "n", f"Congratulations! You have completed level {level_num}")
+        if level_num > 0 :
+            label(self.game_content_frame, self.bg_colour, self.txt_colour, "n", f"Congratulations! You have completed level {level_num}")
+        else:
+            label(self.game_content_frame, self.bg_colour, self.txt_colour, "n", "Congratulations! You have completed the Tutorial")
         if self.level == level_num:
             self.level_add()
         button(self.game_content_frame, self.bt_colour, self.txt_colour, "Next Level", lambda: self.next_level(level_num))
@@ -471,11 +513,11 @@ Is this level 1?""")
         setattr(self, frame_attr, new_frame)  # Save reference to the new frame
         # Populate new frame with content based on page_number
         if level_num == 0 and self.page_number == 0:
-            self.image_to_replace = tk.Label(new_frame, text = "Press this to go back to the level select")
-            self.image_to_replace.pack(anchor = "n")
+            label(new_frame, self.bg_colour, self.txt_colour, "n", """  ^
+Press this button to go back to the level select""")
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
             label(format_frame, self.bg_colour, self.txt_colour, "sw",
-"""This program is going to teach you about A.I then
+"""This game is going to teach you about A.I then
 it will quiz you on the information that you learnt.
 This is the tutorial level, it will teach you how the program works.""")
         elif level_num == 0 and self.page_number == 1:
