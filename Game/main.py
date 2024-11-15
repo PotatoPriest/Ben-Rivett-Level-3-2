@@ -86,6 +86,11 @@ class window: # This class is used to create the window of the programme
         self.score += 1
         self.update_score()
 
+    def score_decrease(self):
+        self.score = int(self.score)
+        self.score -= 1
+        self.update_score()
+
     def update_score(self): # This definition is used to update the score
         self.score_label.config(text="Score: " + str(self.score), foreground=self.txt_colour, background=self.bg_colour)
         self.score_frame.config(background=self.bg_colour)
@@ -267,7 +272,7 @@ class window: # This class is used to create the window of the programme
 
     def custom_colour(self): # this definition allows the user to set a custom colour
         self.custom = askstring("Custom Colour", "Enter a hex code for the colour")
-
+        
         if self.custom is None:
             messagebox.showerror("Error", "No hex code entered")
 
@@ -372,8 +377,8 @@ class window: # This class is used to create the window of the programme
         self.game_learn_frame.destroy()
         self.game_content_frame = tk.Frame(self.window, background=self.bg_colour)
         self.game_content_frame.pack(fill="both", expand=True)
+        self.randomize_answers(level_num)
         if level_num == 0 and self.question_number == 1:
-            self.randomize_answers(level_num)
 
             label(self.game_content_frame, self.bg_colour, self.txt_colour, "n", """Question 1:
 What was an example of a task A.I could preform
@@ -384,25 +389,21 @@ acording to it's definition?""")
             button(self.game_content_frame, self.qbt_colour_4, self.txt_colour, f"D) {self.q4}", lambda: self.answer_check(self.answer_list[self.q4], level_num))
 
         elif level_num == 0 and self.question_number == 2:
-            self.randomize_answers(level_num)
             label(self.game_content_frame, self.bg_colour, self.txt_colour, "n", """Question 2:
 The levels in this game are split into two parts,
 the first part teaches you something about A.I
-and the second part gives you a quiz about waht you learnt
+and the second part gives you a quiz about waht you learnt.
 True or False""")
             button(self.game_content_frame, self.qbt_colour_1, self.txt_colour, f"A) {self.q1}", lambda: self.answer_check(self.answer_list[self.q1], level_num))
             button(self.game_content_frame, self.qbt_colour_2, self.txt_colour, f"B) {self.q2}", lambda: self.answer_check(self.answer_list[self.q2], level_num))
 
         elif level_num == 1 and self.question_number == 1:
-            self.randomize_answers(level_num)
-
             label(self.game_content_frame, self.bg_colour, self.txt_colour, "n", """Question 1:
 All current A.I is considered to be Strong A.I.""")
             button(self.game_content_frame, self.qbt_colour_1, self.txt_colour, f"A) {self.q1}", lambda: self.answer_check(self.answer_list[self.q1], level_num))
             button(self.game_content_frame, self.qbt_colour_2, self.txt_colour, f"B) {self.q2}", lambda: self.answer_check(self.answer_list[self.q2], level_num))
 
         elif level_num == 1 and self.question_number == 2:
-            self.randomize_answers(level_num)
             label(self.game_content_frame, self.bg_colour, self.txt_colour, "n", """Question 2:
 What are weak A.I capable of?""")
             button(self.game_content_frame, self.qbt_colour_1, self.txt_colour, f"A) {self.q1}", lambda: self.answer_check(self.answer_list[self.q1], level_num))
@@ -439,7 +440,7 @@ Is A.I inherently dangerous?""")
             button(self.game_content_frame, self.qbt_colour_2, self.txt_colour, f"B) {self.q2}", lambda: self.answer_check(self.answer_list[self.q2], level_num))
 
         elif level_num == 3 and self.question_number == 2:
-            label(self.game_content_frame, self.bg_colour, self.txt_colour, "n", """Question 1:
+            label(self.game_content_frame, self.bg_colour, self.txt_colour, "n", """Question 2:
 Which one of these was a provided example of A.I
 being a danger?""")
             button(self.game_content_frame, self.qbt_colour_1, self.txt_colour, f"A) {self.q1}", lambda: self.answer_check(self.answer_list[self.q1], level_num))
@@ -448,9 +449,8 @@ being a danger?""")
             button(self.game_content_frame, self.qbt_colour_4, self.txt_colour, f"D) {self.q4}", lambda: self.answer_check(self.answer_list[self.q4], level_num))
 
         elif level_num == 3 and self.question_number == 3:
-            label(self.game_content_frame, self.bg_colour, self.txt_colour, "n", """Question 1:
-Which of these is an exammple of a danger that A.I
-poses that was NOT provided?""")
+            label(self.game_content_frame, self.bg_colour, self.txt_colour, "n", """Question 3:
+What was the lowest estimate for A.I global Co2 emissions?""")
             button(self.game_content_frame, self.qbt_colour_1, self.txt_colour, f"A) {self.q1}", lambda: self.answer_check(self.answer_list[self.q1], level_num))
             button(self.game_content_frame, self.qbt_colour_2, self.txt_colour, f"B) {self.q2}", lambda: self.answer_check(self.answer_list[self.q2], level_num))
             button(self.game_content_frame, self.qbt_colour_3, self.txt_colour, f"C) {self.q3}", lambda: self.answer_check(self.answer_list[self.q3], level_num))
@@ -471,7 +471,7 @@ poses that was NOT provided?""")
             elif self.question_number == 2:
                 self.answer_list = {"Complete tasks that is was taught to complete" : True, "Learn new things" : False, "Do something it has never done before" : False, "Talk to you" : False}
             elif self.question_number == 3:
-                self.answer_list = {"A chat bot" : True, "An A.I with the capability to learn new things" : False, "A smart refrigerator" : False}
+                self.answer_list = {"A chat bot" : True, "An A.I with the capability to learn new things" : False, "An A.I that has the intelligence of a human" : False}
         elif level_num == 2:
             if self.question_number == 1:
                 self.answer_list = {"ChatGPT" : True, "Siri" : False, "Cleverbot" : False}
@@ -483,7 +483,7 @@ poses that was NOT provided?""")
             elif self.question_number == 2:
                 self.answer_list = {"A.I could give biased information" : True, "A.I could be used to cheat in tests" : True, "A.I could explode the moon" : False, "A.I could eat all of the electricity" : False}
             elif self.question_number == 3:
-                self.answer_list = {"A.I could negativly affecy the enviroment" : True, "A.I might take my house" : False, "A.I could give biased information" : False, "A.I might be used to cheat" : False}
+                self.answer_list = {"2.5%" : True, "2.3%" : False, "3.7%" : False, "2.9%" : False}
 
         self.shuffle_dict()
 
@@ -510,6 +510,7 @@ poses that was NOT provided?""")
             messagebox.showinfo("Correct", "That was the correct answer!")
             self.game_content(level_num)
         else:
+            self.score_decrease()
             self.question_number += 1
             messagebox.showinfo("Incorrect", "Sorry, you got it wrong")
             self.game_content_frame.destroy()
@@ -524,6 +525,7 @@ poses that was NOT provided?""")
         if self.level == level_num:
             self.level_add()
         label(self.game_content_frame, self.bg_colour, self.txt_colour, "n", f"Your current score is: {self.score}")
+        button_img(self.game_content_frame, "Save", self.important_colour_2, self.txt_colour, self.save_file_def, "Game\Images\Save_Game.png", "right", 20, 20)
         button_img(self.game_content_frame, "Next Level", self.important_colour_2, self.txt_colour, lambda: self.next_level(level_num), "Game\Images\Right_Arrow.png", "right", 30, 20)
         button(self.game_content_frame, self.bt_colour, self.txt_colour, "Level Select", lambda: self.back(False))
 
@@ -563,10 +565,8 @@ poses that was NOT provided?""")
         # Disable previous and next buttons based on page_number
         if level_num == 0:
             self.page_range = 5
-        elif level_num == 1 or level_num == 2:
+        elif level_num == 1 or level_num == 2 or level_num == 3:
             self.page_range = 3
-        elif level_num == 3:
-            self.page_range = 2
         elif level_num == 4:
             self.page_range = 4
         if self.page_number <= 0:
@@ -596,27 +596,32 @@ poses that was NOT provided?""")
 Press this button to go back to the level select""")
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
             label(format_frame, self.bg_colour, self.txt_colour, "sw",
-"""This game is going to teach you about A.I then
-it will quiz you on the information that you learnt.
-This is the tutorial level, it will teach you how the program works.""")
+"""Welcome to my game! this is the tutorial level,
+it will teach you everything you need to know
+about how the game works.""")
         elif level_num == 0 and self.page_number == 1:
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
-            label(format_frame, self.bg_colour, self.txt_colour, "sw", """Levels are split into two parts.
-The first part will teach you about an area of A.I then
-the second part will quiz you on the information that you learnt""")
+            label(format_frame, self.bg_colour, self.txt_colour, "sw", """The levels in this game are split into two parts.
+The first part will teach you something about A.I then the second part
+will quiz you on the information that you learnt in the first part""")
         elif level_num == 0 and self.page_number == 2:
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
-            label(format_frame, self.bg_colour, self.txt_colour, "sw", """This tuorial will teach you the definition of A.I.
-The definiion of A.I acording to Google is:
+            label(format_frame, self.bg_colour, self.txt_colour, "sw", """This is an example of what the first part of a level could look like:
+In order to know what something is you should probobly first learn
+what its definition is. This is Googles definiion of A.I:
+
 'The theory and development of computer systems
 able to perform tasks normally requiring human intelligence,
 such as visual perception, speech recognition,
 decision-making, and translation between languages.'""")
         elif level_num == 0 and self.page_number == 3:
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
-            label(format_frame, self.bg_colour, self.txt_colour, "sw", """An example of a quesion that could be asked is:
-What was an example of a task A.I could perform acording
-to it's definition?
+            label(format_frame, self.bg_colour, self.txt_colour, "sw", """Now that you have completed the first half of the level
+and learned the definition of A.I here is an example of
+a quesion that you could be asked in the second half of the level:
+
+What is am example of a task that A.I could perform
+acording to the definition that you learn?
 
 A) Translation between languages
 B) Creaing a digital picture
@@ -624,14 +629,17 @@ C) Speaking to a human
 D) Playing a game""")
         elif level_num == 0 and self.page_number == 4:
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
-            label(format_frame, self.bg_colour, self.txt_colour, "sw", """The correct answer would be
+            label(format_frame, self.bg_colour, self.txt_colour, "sw", """The correct answer to this question would be
 A) Translation between languages
-This is becasue it was the only one of the four that was
+This is becasue even though A.I can complete all of the tasks
+anser A was the only one of the four that was
 present in the provided definiion.""")
         elif level_num == 0 and self.page_number == 5:
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
-            label(format_frame, self.bg_colour, self.txt_colour, "sw", """Next you will be quized on what you learnt.
-Click the buttton bellow to move onto
+            label(format_frame, self.bg_colour, self.txt_colour, "sw", """Well done! you have completed the first half of the tutorial!
+Now you get to see what the second half of each level will be like.
+First we'll start with a familiar question so you can understand
+how the game will work. Click the buttton bellow to move onto
 the quiz secion of the level.""")
             button(format_frame, self.important_colour_2, self.txt_colour, "Start Quiz", lambda: self.game_content(level_num))
 
@@ -642,56 +650,67 @@ are a couple diferent types of A.I, the first being Narrow or Weak A.I
 and the second being General or Strong A.I.""")
         elif level_num == 1 and self.page_number == 1:
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
-            label(format_frame, self.bg_colour, self.txt_colour, "sw", """Weak A.I are A.I that are designed to perform a spesific task,
-an example of a weak A.I are the NPC's (Non-Player characters)
-in video games or Chatgpt.""")
+            label(format_frame, self.bg_colour, self.txt_colour, "sw", """Weak A.I are A.I that are designed to perform a spesific task or set of
+tasks an example of a weak A.I are the NPC's (Non-Player characters)
+in video games or the A.I assistants Siri and Alexa""")
         elif level_num == 1 and self.page_number == 2:
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
-            label(format_frame, self.bg_colour, self.txt_colour, "sw", """Strong A.I are A.I that are capable of learning
-new things similar to how a human is able to.
+            label(format_frame, self.bg_colour, self.txt_colour, "sw", """Strong A.I on the other hand are capable of learning
+new things similar as to how a human might something new.
 A stong A.I would be able to perfoem a wide range of tasks
-that a weak A.I would be unable to complete.""")
+that a weak A.I would be unable to complete becasue of this advantage.""")
         elif level_num == 1 and self.page_number == 3:
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
             label(format_frame, self.bg_colour, self.txt_colour, "sw", """Most current A.I are considered Weak A.I with a few notable exceptions 
 such as Chatgpt which could be considered more advaced than weak
-A.I but not quit a strong A.I.""")
+A.I but not quit a strong A.I. This is because ChatGPT is able to
+complete a wide range of tasks and is constantly learning from every
+interaction however it is not able to use its learnt knoledge
+to do something it has never done before like a human could.
+
+This is the end of part one of level 1,
+press the bellow button to move onto part two.""")
             button(format_frame, self.important_colour_2, self.txt_colour, "Start Quiz", lambda: self.game_content(level_num))
 
         elif level_num == 2 and self.page_number == 0: # Level 2
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
-            label(format_frame, self.bg_colour, self.txt_colour, "sw", """A.I is currently being used in many diferent ways
-currently the most famouse A.I is probobly ChatGPT.
-ChatGPT is technically still a weak A.I however it is advancing
-at a rapid pace and may soon become a strong A.I.""")
+            label(format_frame, self.bg_colour, self.txt_colour, "sw", """There are many diferent types of A.I all with their own uses.
+Some examples of some useful A.I are ChatGPT which can provide
+as much information as Google can as well as help you with any questions
+that you may have. Then there is DALL-E which is capable of generating
+images and SORA which is capable of generating increadibly impressive
+videos. These are just a few examples of some of the more advanced A.I
+that are out there.""")
         elif level_num == 2 and self.page_number == 1:
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
-            label(format_frame, self.bg_colour, self.txt_colour, "sw", """Some of the most useful A.I that are currently avaliable
-are advanced multi-purpose A.I such as ChatGPT, these A.I are designed
-to be useful in multiple areas. They can be useed as a digital person
-to talk to, they can be used as a way to search for information like
-Googles A.I overview that you get when searching for something using
-Google.""")
+            label(format_frame, self.bg_colour, self.txt_colour, "sw", """Some of the most useful A.I in everyday life are
+LLM's or Large Language Models, these are A.I that are designed to mimic
+human language and are able to communicate with people,
+although they are not able to think for themselves as they work by simply
+predicting what to say next. Probobly the most famous LLM is ChatGPT
+which can be used in many diferent ways to help you.
+LLMs can be useful when you need to get a summary of a large amount of
+data without much work as they are able to take in all of the information
+and give you all of the main points as well as provide their own
+information based off thier large library of knoledge.""")
         elif level_num == 2 and self.page_number == 2:
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
-            label(format_frame, self.bg_colour, self.txt_colour, "sw", """Some other things that A.I can be useful for are
-for getting a summary of large amounts of data without much work,
-getting the A.I to write things for you (Be careful with this as 
-it may get you into trouble) and A.I can be very useful when wrting
-code as it can help debug areas as well as provide insight in how
-you could do something you are struggling with.""")
+            label(format_frame, self.bg_colour, self.txt_colour, "sw", """LLMS like ChatGPT are also able to do things like create documents
+and even write code so they are increadibly versitile.
+A great example of a increadibly useful LLM is Microsoft Copilot.
+Copilot is basically ChatGPT however it is backed into window 11 so
+it is increadibly accessible for the average person.""")
         elif level_num == 2 and self.page_number == 3:
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
-            label(format_frame, self.bg_colour, self.txt_colour, "sw", """Another thing that A.I can be useful for is
-automated machinery like driverless cars and robots. A.I is used
-in pretty much everything on the internet even if you don't realize it.""")
+            label(format_frame, self.bg_colour, self.txt_colour, "sw", """There are also many other things that A.I is capable of doing
+However I think its time to get into the quiz!""")
             button(format_frame, self.important_colour_2, self.txt_colour, "Start Quiz", lambda: self.game_content(level_num))
 
         elif level_num == 3 and self.page_number == 0: # Level 3
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
             label(format_frame, self.bg_colour, self.txt_colour, "sw", """Now that you have learnt about the benefits of A.I
 its time to learn about how dangerous A.I can be.
-Firstly yo should know that A.I isn't inherently danferous
+Firstly you should know that A.I isn't inherently dangerous
 it is only how you use A.I where it becomes dangerous.
 There is the major danger of using A.I to cheat in
 tests and over things that require it to be done by a person.
@@ -712,6 +731,20 @@ biased information, this can be espetially bad when you
 need to research something and you use A.I.
 Probobly the worst danger of using A.I are the deepfakes
 and misinformation that A.I can spread.""")
+        elif level_num == 3 and self.page_number == 3:
+            format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
+            label(format_frame, self.bg_colour, self.txt_colour, "sw", """Posibly the two worst things about A.I are
+how A.I gets its training data and the amount of energy
+it takes in order to keep the massive data centers running.
+The way that A.I gets its data is by 'scraping' the web.
+This entails taking as much data from as many webites as possible
+usually without the knoledge of the people that produced that
+'data' to begin with. And then there is the enviremental impact.
+The airline industry which produces lots of Co2 emmisions
+produces around 2 percent of the worlds carbon emitions
+whereas in comparison the A.I industry produces
+routhly 2.5 - 3.7 percent.""")
+
             button(format_frame, self.important_colour_2, self.txt_colour, "Start Quiz", lambda: self.game_content(level_num))
 
         elif level_num == 4 and self.page_number == 0: # Final Level
@@ -739,7 +772,7 @@ missinformation can become easier to fall victim to becasue of A.I.""")
         elif level_num == 4 and self.page_number == 4:
             format_frame = reusable_frame(new_frame, "top", None, True, self.bg_colour)
             label(format_frame, self.bg_colour, self.txt_colour, "sw", """Thank you so much for playing my game!""")
-            button(format_frame, self.important_colour_2, self.txt_colour, "Save Game", self.save_file_def)
+            button_img(format_frame, "Save", self.important_colour_2, self.txt_colour, self.save_file_def, "Game\Images\Save_Game.png", "right", 20, 20)
             button(format_frame, self.important_colour_1, self.txt_colour, "Finish Game", lambda: self.back(True))
 
         # Update page label
