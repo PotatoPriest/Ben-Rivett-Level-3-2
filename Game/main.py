@@ -196,7 +196,7 @@ class window: # This class is used to create the window of the programme
 
     def reset_file_def(self): # Definition for reseting the save file
         with open("Game/save.txt", "w") as self.save_file:
-            self.save_file.writelines("0\n0\n#d9d9d9\n#000000\n#d9d9d9\n#FFC0CB\n#00FF00\n#FF0000\n#00FF00\n#00FFFF\n#FFFF00")
+            self.save_file.writelines("0\n0\n#d9d9d9\n#000000\n#d9d9d9\n#FF0000\n#00FF00\n#FFC0CB\n#00FF00\n#00FFFF\n#FFFF00")
         messagebox.showinfo("Save Reset", "Your save has been successfully reset")
 
     def settings_menu(self): # this is the settings menu
