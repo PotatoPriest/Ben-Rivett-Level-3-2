@@ -34,17 +34,6 @@ def reusable_frame(master, side, fill, expand, background): # This definition is
     frame.pack(side = side, fill = fill, expand = expand)
     return frame
 
-def insertable_image(master, path, x, y, fill, expand, background): # this imports an image to be used in code
-    imageframe = tk.Frame(master, background = background)
-    img = ImageTk.PhotoImage(Image.open(path).resize((x, y)))
-    image = tk.Label(imageframe, image=img)
-    image.image = img
-    image.pack()
-    imageframe.pack(fill=fill, expand=expand)
-    #test_image = Image.open("Game\Images\test_image.png") hmm this is weird
-    #print(test_image.mode)
-    return imageframe
-
 def Error(): # This definition is used to error catch
     messagebox.showerror(title="Error", message="There has been an error")
 
