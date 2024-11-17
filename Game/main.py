@@ -166,7 +166,8 @@ class window: # This class is used to create the window of the programme
 
     def save_file_def(self): # This definition allows for the game to be saved
         with open("Game/save.txt", "w") as self.save_file:
-            self.save_file.writelines(f"{self.score}\n{self.level}\n{self.bg_colour}\n{self.txt_colour}\n{self.bt_colour}\n{self.important_colour_1}\n{self.important_colour_2}\n{self.qbt_colour_1}\n{self.qbt_colour_2}\n{self.qbt_colour_3}\n{self.qbt_colour_4}")
+            self.save_file.writelines(f"""{self.score}\n{self.level}\n{self.bg_colour}\n{self.txt_colour}\n{self.bt_colour}\n{self.important_colour_1}
+{self.important_colour_2}\n{self.qbt_colour_1}\n{self.qbt_colour_2}\n{self.qbt_colour_3}\n{self.qbt_colour_4}""")
         messagebox.showinfo("Game saved", "Your game has been successfully saved")
 
     def load_file_def(self): # This definition allows for a save to be loaded
